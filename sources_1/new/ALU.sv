@@ -5,6 +5,7 @@ module ALU (
     output logic [31:0] ALU_OUT
 );
 
+//HEre is my changes
 typedef enum logic [3:0] {
 _add = 4'b0000,
 _sub = 4'b1000,
@@ -20,7 +21,6 @@ _lui = 4'b1001
  } Operations;
  Operations operation;
  assign operation = Operations'(ALU_FUN);
-
 
 
 always_comb
