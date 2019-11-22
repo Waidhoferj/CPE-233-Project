@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 // Module: GyroTilt
 //Purpose: Converts angular velocity data into tilt angle of gyro
 
