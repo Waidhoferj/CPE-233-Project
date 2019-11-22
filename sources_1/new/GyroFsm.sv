@@ -1,3 +1,11 @@
+`timescale 1ns / 1ps
+// CREDIT: based off of the master_interface created by Andrew Skreen from Diligent
+//Module: GyroFsm
+//Purpose: Gets angular velocity data from the GYRO PMOD
+
+// ==============================================================================
+// 								Define Module
+// ==============================================================================
 module GyroFsm (
 		input end_transmission,
 			clk,
@@ -11,8 +19,10 @@ module GyroFsm (
 			y_axis_data,
 			z_axis_data
 );
-//FSM States
-//==============================================================
+//===============================================================================
+//								FSM States
+//===============================================================================
+
 typedef enum logic { 
 	Idle
 	Setup,
@@ -24,8 +34,10 @@ typedef enum logic {
  } GyroState;
 GyroState current_state, previous_state;
 
-//Address Declarations
-//=============================================================
+//===============================================================================
+//								Addresses & Parameters
+//===============================================================================
+
 parameter [15:0] SETUP_GYRO = 16'h0F20;
 // address of X_AXIS (0x28) with read and multiple bytes selected (0xC0)
 parameter [7:0]  DATA_READ_BEGIN = 8'hE8;
@@ -35,15 +47,18 @@ parameter        MAX_BYTE_COUNT = 6;
 parameter [11:0] SS_COUNT_MAX = 12'hFFF;
 parameter [23:0] COUNT_WAIT_MAX = 24'h7FFFFF;		//X"000FFF";
 
-//Internal Variables
-//=============================================================
+//===============================================================================
+//								Internal Variables
+//===============================================================================
+
 logic [2:0] byte_count;
 logic [11:0] ss_count;
 logic [23:0] count_weight;
 logic [15:0] axis_data [0:2];
 
-//FSM
-//==============================================================
+// ==============================================================================
+// 							  		   Implementation
+// ============================================================================== 
 
 initial begin
 	current_state = Idle;
@@ -160,12 +175,12 @@ begin
 			else if (previous_state == Run && byte_count != 1) begin
 					case (byte_count)
 					//Maybe a struct...
-							3'd2 : axis_data[0][7:0] <= recieved_data; //Axis data assigned to internal variables
-							3'd3 : axis_data[0][15:8] <= recieved_data;
-							3'd4 : axis_data[1][7:0] <= recieved_data;
-							3'd5 : axis_data[1][15:8] <= recieved_data;
-							3'd6 : axis_data[2][7:0] <= recieved_data;
-							3'd7 : axis_data[2][15:8] <= recieved_data;
+							2 : axis_data[0][7:0] <= recieved_data; //Axis data assigned to internal variables
+							3 : axis_data[0][15:8] <= recieved_data;
+							4 : axis_data[1][7:0] <= recieved_data;
+							5 : axis_data[1][15:8] <= recieved_data;
+							6 : axis_data[2][7:0] <= recieved_data;
+							7 : axis_data[2][15:8] <= recieved_data;
 							default : ;
 					endcase
 			end
