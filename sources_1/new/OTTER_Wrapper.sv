@@ -85,31 +85,9 @@ module OTTER_Wrapper(
    debounce_one_shot DB(.CLK(sclk), .BTN(BTNL), .DB_BTN(btn_int));
 
    //CONTROLLER DECLARATIONS
-    spi_interface SPII (
-        input [7:0] send_data, 
-		input begin_transmission,
-		slave_select,
-		miso,
-		clk,
-		rst,
-		output logic [7:0] recieved_data, //Data recieved from the GYRO PMOD
-		output logic end_transmission,
-		mosi,
-		sclk
+    GyroTop Gyroscope(
+        //When the IOs are finalized, link to the OTTER here.
     )
-   GyroFsm GFSM (
-		.end_transmission()
-			.clk,
-			.rst,
-			.start,
-   		.recieved_data,
-   		.begin_transmission,
-			.slave_select,
-		.send_data,
-		.x_axis_data,
-			.y_axis_data,
-			.z_axis_data
-);
 
    // Declare VGA Frame Buffer //////////////////////////////////////////////
    vga_fb_driver_80x60 VGA(.CLK_50MHz(sclk), .WA(r_vga_wa), .WD(r_vga_wd),
