@@ -44,6 +44,10 @@ module OTTER_Wrapper(
     // to add constants here for the mux below
     localparam SWITCHES_AD = 32'h11000000;
     localparam VGA_READ_AD = 32'h11040000;
+    localparam GYRO_IN_X = 32'h11080000;
+    localparam GYRO_IN_Y = 32'h11090000;
+    localparam GYRO_IN_Z = 32'h110a0000;
+    
            
     // OUTPUT PORT IDS ///////////////////////////////////////////////////////
     // In future labs you can add more MMIO
@@ -51,7 +55,8 @@ module OTTER_Wrapper(
     localparam SSEG_AD     = 32'h110C0000;
     localparam VGA_ADDR_AD = 32'h11100000;
     localparam VGA_COLOR_AD = 32'h11140000; 
-    localparam KEYBOARD_AD = 32'h11200000;       
+    localparam KEYBOARD_AD = 32'h11200000;
+    localparam BT_AD = 32'h11200000;
     
    // Signals for connecting OTTER_MCU to OTTER_wrapper /////////////////////////
    logic s_interrupt, keyboard_int,btn_int;
@@ -85,9 +90,16 @@ module OTTER_Wrapper(
    debounce_one_shot DB(.CLK(sclk), .BTN(BTNL), .DB_BTN(btn_int));
 
    //CONTROLLER DECLARATIONS
+   logic [15:0] tiltX, tiltY, tiltZ;
     GyroTop Gyroscope(
+        .CLK(CLK), .X(tiltX), .Y(tiltY), .Z(tiltZ)
+        )
         //When the IOs are finalized, link to the OTTER here.
     )
+
+    BluetoothTop Bluetooth(
+
+    );
 
    // Declare VGA Frame Buffer //////////////////////////////////////////////
    vga_fb_driver_80x60 VGA(.CLK_50MHz(sclk), .WA(r_vga_wa), .WD(r_vga_wd),
@@ -121,6 +133,7 @@ module OTTER_Wrapper(
                 LEDS_AD: LEDS <= IOBUS_out;    
                 SSEG_AD: r_SSEG <= IOBUS_out[15:0];
                 VGA_ADDR_AD: r_vga_wa <= IOBUS_out[12:0];
+                BT_AD: 
                 VGA_COLOR_AD: begin  r_vga_wd <= IOBUS_out[7:0];
                                      r_vga_we <= 1;  
                               end     
@@ -137,6 +150,9 @@ module OTTER_Wrapper(
             SWITCHES_AD: IOBUS_in[15:0] = SWITCHES;
             VGA_READ_AD: IOBUS_in[15:0] = r_vga_rd;           
             KEYBOARD_AD: IOBUS_in[7:0] = s_scancode;
+            GYRO_IN_X: IOBUS_in[15:0] = tiltX;
+            GYRO_IN_Y: IOBUS_in[15:0] = tiltY;
+            GYRO_IN_Z: IOBUS_in[15:0] = tiltZ;
             default: IOBUS_in=32'b0;
         endcase
     end
