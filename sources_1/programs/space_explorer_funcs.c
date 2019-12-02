@@ -1,9 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
+//#include <stdio.h>
+//#include <stdlib.h>
 #define ASTEROID_COUNT 10
 
 volatile int *const VG_ADDR = (int *)0x11100000;
 volatile int *const VG_COLOR = (int *)0x11140000;
+volatile int *const GYRO_X = (int *)0x11080000;
+volatile int *const GYRO_Y = (int *)0x11090000;
+volatile int *const GYRO_Z = (int *)0x110a0000;
  
 
 //Resets all positions and gets game ready to start
@@ -26,8 +29,8 @@ void updateAsteroid(int position[2]);
 //set up background
 void draw_background();
 
-int atsrd_color = 0x00
-int bgd_color = 0xFF
+int astrd_color = 0x00;
+int bgd_color = 0xFF;
 
 int screen_width = 80;
 int screen_height = 60;
@@ -35,13 +38,21 @@ int screen_height = 60;
 int alive = 1;
 int spaceship_pos[2];
 //An array of asteroid positions
-int astrd_cnt = 10
-int asteroids[astrd_cnt][2];
+//int astrd_cnt = 10;
+int asteroids[10][2] = {0};
 
-int ship_width = 4;
-int ship_height = 7;
+int ship_width = 3;
+int ship_height = 5;
 int asteroid_width = 4;
 int asteroid_height = 4;
+
+struct Pos
+{
+    int x;
+};
+
+struct Pos p1 = 39;
+
 
 int random(int lower, int upper)
 {
@@ -85,11 +96,12 @@ int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_COUNT][
 //A
 void initGame(int *spaceship_pos, int *asteroids)
 {
-    spaceship_pos[1] = //middle of screem
-    int i = 0;
-    for (i; ASTEROID_COUNT; i++)
+    //since spaceship pos is top left corner of ship, have to calc the position based of the width/height
+    spaceship_pos[0] = 39 - ((ship_width-1)/2);
+    spaceship_pos[1] = 79 - ship_height;
+    for (int i=0; i < ASTEROID_COUNT; i++)
     {
-        asteroids[i][2] = 0;
+        asteroids[i] = 0;
     }
 }
 
@@ -100,22 +112,25 @@ void updateAsteroid(int position[2])
     position[1] = position[1] - 1;
     int lower = position[0] - 1;
     int upper = position[0] + 1;
-    position[0] = random(lower, upper)
+    position[0] = random(lower, upper);
+    drawAsteroid(position, asteroid_width,asteroid_height);
 
 } 
 
 //A
 void drawAsteroid(int position[2], int asteroid_width, int asteroid_height)
 {
-        i = asteroid_width;
-        j = asteroid_height;
-        l = 0;
+        int i = asteroid_width;
+        
+
         //draws a block asteroid with dimensions asteroid_width by asteroid_height 
-        for (l; j; l++)
+        //for every row of the asteroid
+        for (int l = 0; l < asteroid_height; l++)
         {
-            for (position[0];postion[0] + i; position[0]++)
+            //for every column of each row (moving the x position through each row)
+            for (position[0];position[0] < asteroid_width; position[0]++)
             {
-                draw_dot(posiotion[0],position[1],astrd_color);
+                draw_dot(position[0],position[1],astrd_color);
             }   
         }
         
@@ -124,13 +139,11 @@ void drawAsteroid(int position[2], int asteroid_width, int asteroid_height)
 //A
 void draw_background()
 {
-    int i = 0;
-    int j = 0;
-    for (i; int screen_height; i++ )
+    for (int i=0; i < screen_height; i++ )
     {
-        for(j; int screen_width; j++)
+        for(int j=0; j < screen_width; j++)
         {
-            draw_dot(int i, int j, bgd_color)
+            draw_dot(i,j, bgd_color);
         }
     }
 }
@@ -145,48 +158,61 @@ void draw_dot(int X, int Y, int color)
 //A
 void drawSpaceship(int spaceshipPosition[2])
 {
-    i = ship_width;
-    j = ship_height;
-    l = 0;
-    //draws a block asteroid with dimensions ship_width by ship_height 
-    for (l; j; l++)
+    int i = spaceshipPosition[0];
+    //draws a block ship with dimensions ship_width by ship_height 
+    // for every row of the ship
+    for (int l=0; l < ship_height; l++)
     {
-        for (spaceshipPosition[0];spaceshipPostion[0] + i; spaceshipPosition[0]++)
+        //draw dot for every column of every row of the ship
+        for (spaceshipPosition[0];spaceshipPosition[0] < ship_width; spaceshipPosition[0]++)
         {
-            draw_dot(spaceshipPosiotion[0],spaceshipPosition[1],astrd_color);
+            draw_dot(spaceshipPosition[0],spaceshipPosition[1],astrd_color);
         }   
     }
 }
 int main(void){
     
     draw_background();
+    initGame(spaceship_pos,asteroids);
     //setup ship
-    drawSpaceship(spaceshipPosition[2])
-    //setup asteroids
-    //i dont really understand how to continually update the array in C so i kind of did it like python
-    int delay = 32; //32 ms 
-    int astrd_shift_time = 5000// 5000ms(half second)
+    drawSpaceship(spaceship_pos);
+
+    
+    
+    int shipdelay = 32; //32 ms 
     int counter = 0;
-    int c = 0
-    for (c, ASTEROID_COUNT, c++)
+    int asteroid_count = 0;  //how many asteroids are on the screen
+    while (alive == 1)
     {
-        int position[2] = {random(0,60-asteroid_width-1),80};
-        asteroids[counter][2] = drawAsteroid(position[2]);
-        delay(astrd_shift_time);
-        for (i, counter, i++)
+        p1.x = GYRO_X;
+        float x = p1.x * .0001;
+        int xpos = round(x);
+        spaceship_pos[0] = xpos;
+        alive = checkCollision(spaceship_pos,asteroids);
+        if (counter == 5000)  //updates the asteroid after 5000ms
         {
-            asteroids[i][2] = updateAsteroid(asteroids[i][2]);
+            counter = 0;
+            //draws a new asteroid if there are less than 10 asteroids
+            if (asteroid_count <= 10)
+            {
+                int position[2] = {random(0,60-asteroid_width-1),80};
+                asteroids[asteroid_count][2]=position;   //adds new asteroid position to asteroid arra
+                drawAsteroid(position,asteroid_width,asteroid_height);
+                asteroid_count = asteroid_count++;
+            }
+          
+            //updates all asteroids that currently exist
+            for (int a = 0; a < asteroid_count+1; a++)
+            { 
+                updateAsteroid(asteroids[a]);
+            }
+          
+
         }
-         counter = counter++;   
+        counter = counter++;
+        delay(shipdelay);
     }
+      
+    
   
-
-
-    int i = 0;
-    for (i; astrd_cnt, i++ )
-    {
-        int position[2] = {random(0,60-asteroid_width-1), 80};
-        asteroids[i][2] = drawAsteroid(position[2]);    
-    }
-
 };
