@@ -28,6 +28,7 @@ module OTTER_Wrapper(
    input PS2Clk,
    input PS2Data,
    input RX, 
+   inout [3:0] JA,
    output logic [15:0] LEDS,
    output [7:0] CATHODES,
    output [3:0] ANODES,
