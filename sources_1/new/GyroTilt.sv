@@ -43,9 +43,9 @@ else begin
     x = x + dx*rate;
     y = y + dy*rate;
     z = z + dz*rate;
-    assign X = x;
-    assign Y = y;
-    assign Z = z;
+    X <= x;
+    Y <= y;
+    Z <= z;
 end
 end
 endmodule

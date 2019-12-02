@@ -36,7 +36,7 @@ module spi_interface(
 			logic [3:0]        rx_count = 0;
 			logic              sclk_buffer = 0, sclk_previous = 0;
 			
-            typedef enum data_type { Idle, Rx_Tx, Hold } State;
+            typedef enum { Idle, Rx_Tx, Hold } State;
             State current_state;
    
 // ==============================================================================
