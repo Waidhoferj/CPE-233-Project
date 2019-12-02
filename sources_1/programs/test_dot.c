@@ -19,14 +19,16 @@ void main()
 {
     int x = 0;
     int y = SCREEN_HEIGHT / 2;
+    double scaled_x = 0;
     while (1)
     {
-        draw_background();
-        x += *GYRO_X;
-        x = x % SCREEN_WIDTH;
-        draw_dot(x, y, 0xFFF);
 
-        delay(1000);
+        draw_background();
+        scaled_x += (float)(*GYRO_X * 0.01);
+        x = (int)(scaled_x) % SCREEN_WIDTH;
+        draw_dot(x, y, 0x000);
+
+        delay(100);
     }
 }
 void delay(int ms)
