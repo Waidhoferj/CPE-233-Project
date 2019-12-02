@@ -23,8 +23,8 @@ module GyroFsm (
 //								FSM States
 //===============================================================================
 
-typedef enum logic { 
-	Idle
+typedef enum logic [2:0] { 
+	Idle,
 	Setup,
 	Temp,
 	Run,
@@ -55,6 +55,9 @@ logic [2:0] byte_count;
 logic [11:0] ss_count;
 logic [23:0] count_weight;
 logic [15:0] axis_data [0:2];
+logic [23:0] count_wait;
+//TODO: actually hook up temp data to something
+logic [7:0] temp_data;
 
 // ==============================================================================
 // 							  		   Implementation
@@ -72,7 +75,7 @@ begin
 		slave_select <= 1;
 		byte_count <= 0;
 		count_wait <= 0;
-		axis_data <= 0;
+		for(int i = 0; i < 3; i++) axis_data[i] = 0;
 		x_axis_data <= 0;
 		y_axis_data <= 0;
 		z_axis_data <= 0;
@@ -87,9 +90,7 @@ begin
 				if (start)
 				begin
 					byte_count <= 0;
-					for(int i = 0; i < 3; i++) axis_data[i] = 0
-					end
-					axis_data <= 0;
+					for(int i = 0; i < 3; i++) axis_data[i] = 0;
 					current_state = Setup;
 				end
 			end

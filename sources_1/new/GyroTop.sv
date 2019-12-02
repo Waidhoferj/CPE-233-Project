@@ -5,8 +5,8 @@
 // 										  Define Module
 // ==============================================================================
 module GyroTop (
-    input CLK, RST
-    inout [3:0] JA
+    input CLK, RST,
+    inout [3:0] JA,
     //Should the outputs below exist in this form?
     output logic [15:0] X, Y, Z
 );
@@ -37,7 +37,7 @@ GyroFsm GFSM (
 						.clk(CLK),
 						.rst(RST),
 						.slave_select(slave_select),
-						.start(sw[1]),
+						.start(1),
 						.x_axis_data(x_axis_data),
 						.y_axis_data(y_axis_data),
 						.z_axis_data(z_axis_data)

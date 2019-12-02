@@ -56,7 +56,6 @@ module OTTER_Wrapper(
     localparam VGA_ADDR_AD = 32'h11100000;
     localparam VGA_COLOR_AD = 32'h11140000; 
     localparam KEYBOARD_AD = 32'h11200000;
-    localparam BT_AD = 32'h11200000;
     
    // Signals for connecting OTTER_MCU to OTTER_wrapper /////////////////////////
    logic s_interrupt, keyboard_int,btn_int;
@@ -93,13 +92,7 @@ module OTTER_Wrapper(
    logic [15:0] tiltX, tiltY, tiltZ;
     GyroTop Gyroscope(
         .CLK(CLK), .X(tiltX), .Y(tiltY), .Z(tiltZ)
-        )
-        //When the IOs are finalized, link to the OTTER here.
-    )
-
-    BluetoothTop Bluetooth(
-
-    );
+        );
 
    // Declare VGA Frame Buffer //////////////////////////////////////////////
    vga_fb_driver_80x60 VGA(.CLK_50MHz(sclk), .WA(r_vga_wa), .WD(r_vga_wd),
@@ -133,7 +126,6 @@ module OTTER_Wrapper(
                 LEDS_AD: LEDS <= IOBUS_out;    
                 SSEG_AD: r_SSEG <= IOBUS_out[15:0];
                 VGA_ADDR_AD: r_vga_wa <= IOBUS_out[12:0];
-                BT_AD: 
                 VGA_COLOR_AD: begin  r_vga_wd <= IOBUS_out[7:0];
                                      r_vga_we <= 1;  
                               end     

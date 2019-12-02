@@ -132,7 +132,7 @@ module spi_interface(
 						spi_clk_count <= {12{1'b0}};
 					end
 					
-					else if (RxTxSTATE == RxTxTYPE_rx_tx)
+					else if (current_state == Rx_Tx)
 					begin
 						if (spi_clk_count == SPI_CLK_COUNT_MAX)
 						begin
