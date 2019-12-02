@@ -2,12 +2,16 @@
 #include <stdlib.h>
 #define ASTEROID_COUNT 10
 
+volatile int *const VG_ADDR = (int *)0x11100000;
+volatile int *const VG_COLOR = (int *)0x11140000;
+ 
+
 //Resets all positions and gets game ready to start
 void initGame(int *spaceship_pos, int *asteroids);
 //Generates random number between upper and lower
 int random(int lower, int upper);
 //Draws spaceship at position where position is the upper lefthand corner of the ship
-void drawSpaceship(int position[2]);
+void drawSpaceship(int spaceshipPosition[2]);
 //Draws spaceship at position where position is the upper lefthand corner of the ship
 void drawAsteroid(int position[2]);
 //iterates through asteroid positions and sees if they come in contact with ship
@@ -79,6 +83,17 @@ int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_COUNT][
 }
 
 //A
+void initGame(int *spaceship_pos, int *asteroids)
+{
+    spaceship_pos[1] = //middle of screem
+    int i = 0;
+    for (i; ASTEROID_COUNT; i++)
+    {
+        asteroids[i][2] = 0;
+    }
+}
+
+//A
 void updateAsteroid(int position[2])
 {
     //lowers the asteroid by one bit then randomly generates the x position
@@ -120,15 +135,58 @@ void draw_background()
     }
 }
 
+//A
+void draw_dot(int X, int Y, int color)
+{
+    *VG_ADDR = (Y << 7) | X;
+    *VG_COLOR = color;   
+}
+
+//A
+void drawSpaceship(int spaceshipPosition[2])
+{
+    i = ship_width;
+    j = ship_height;
+    l = 0;
+    //draws a block asteroid with dimensions ship_width by ship_height 
+    for (l; j; l++)
+    {
+        for (spaceshipPosition[0];spaceshipPostion[0] + i; spaceshipPosition[0]++)
+        {
+            draw_dot(spaceshipPosiotion[0],spaceshipPosition[1],astrd_color);
+        }   
+    }
+}
 int main(void){
     
     draw_background();
+    //setup ship
+    drawSpaceship(spaceshipPosition[2])
     //setup asteroids
+    //i dont really understand how to continually update the array in C so i kind of did it like python
+    int delay = 32; //32 ms 
+    int astrd_shift_time = 5000// 5000ms(half second)
+    int counter = 0;
+    int c = 0
+    for (c, ASTEROID_COUNT, c++)
+    {
+        int position[2] = {random(0,60-asteroid_width-1),80};
+        asteroids[counter][2] = drawAsteroid(position[2]);
+        delay(astrd_shift_time);
+        for (i, counter, i++)
+        {
+            asteroids[i][2] = updateAsteroid(asteroids[i][2]);
+        }
+         counter = counter++;   
+    }
+  
+
+
     int i = 0;
     for (i; astrd_cnt, i++ )
     {
         int position[2] = {random(0,60-asteroid_width-1), 80};
-        asteroids[i][2] = drawAsteroid(position[2]);   
+        asteroids[i][2] = drawAsteroid(position[2]);    
     }
 
 };
