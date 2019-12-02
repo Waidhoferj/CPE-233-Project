@@ -50,7 +50,7 @@ static int runGame();
 
 //Global Variables
 //============================================================================================================
-int bgd_color = 0x0807;
+int bgd_color = 0x000;
 int screen_width = 80;
 int screen_height = 60;
 //Determines if the player's ship hasn't been hit (0 when hit)
@@ -265,9 +265,9 @@ static int convertGyro(int vel)
 void drawAsteroid(int position[2])
 {
     //colors
-    int highlight = 0x000;
-    int midtone = 0x000;
-    int shadow = 0x000;
+    int highlight = 3;
+    int midtone = 0x2;
+    int shadow = 0x2;
     //Highlights
     draw_horizontal_line(position[0] + 1, position[1], position[0] + 2, highlight);
     draw_vertical_line(position[0], position[1] + 1, position[1] + 2, highlight);
@@ -281,9 +281,9 @@ void drawAsteroid(int position[2])
 
 void drawSpaceship(int position[2])
 {
-    int highlight = 0xFC51;
-    int midtone = 0xFACB;
-    int shadow = 0xE2EB;
+    int highlight = 0xf3;
+    int midtone = 0xc0;
+    int shadow = 0xa0;
 
     //Highlights
     draw_vertical_line(position[0], position[1], position[1] + 1, highlight);
