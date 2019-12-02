@@ -92,7 +92,7 @@ module OTTER_Wrapper(
    //CONTROLLER DECLARATIONS
    logic [15:0] tiltX, tiltY, tiltZ;
     GyroTop Gyroscope(
-        .CLK(CLK), .X(tiltX), .Y(tiltY), .Z(tiltZ)
+        .CLK(CLK), .X(tiltX), .Y(tiltY), .Z(tiltZ), .JA(JA)
         );
 
    // Declare VGA Frame Buffer //////////////////////////////////////////////
