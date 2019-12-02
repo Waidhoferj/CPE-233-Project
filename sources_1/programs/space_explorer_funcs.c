@@ -7,7 +7,7 @@ void initGame(int *spaceship_pos, int *asteroids);
 //Generates random number between upper and lower
 int random(int lower, int upper);
 //Draws spaceship at position where position is the upper lefthand corner of the ship
-void drawSpaceship(int position[2]);
+void drawSpaceship(int spaceshipPosition[2]);
 //Draws spaceship at position where position is the upper lefthand corner of the ship
 void drawAsteroid(int position[2]);
 //iterates through asteroid positions and sees if they come in contact with ship
@@ -128,7 +128,7 @@ int main(void){
     for (i; astrd_cnt, i++ )
     {
         int position[2] = {random(0,60-asteroid_width-1), 80};
-        asteroids[i][2] = drawAsteroid(position[2]);   
+        asteroids[i][2] = drawAsteroid(position[2]);    
     }
 
 };

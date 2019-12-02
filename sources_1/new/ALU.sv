@@ -4,7 +4,7 @@ module ALU (
     input [3:0] ALU_FUN,
     output logic [31:0] ALU_OUT
 );
-
+//fdsfd
 //HEre is my changes
 typedef enum logic [3:0] {
 _add = 4'b0000,
