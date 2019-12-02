@@ -7,6 +7,7 @@ volatile int *const VG_COLOR = (int *)0x11140000;
 volatile int *const GYRO_X = (int *)0x11080000;
 volatile int *const GYRO_Y = (int *)0x11090000;
 volatile int *const GYRO_Z = (int *)0x110a0000;
+volatile int *const SSEG_ADDR = (int *)0x110C0000;
 int const SCREEN_WIDTH = 80;
 int const SCREEN_HEIGHT = 60;
 
@@ -14,19 +15,22 @@ static void draw_background();
 static void draw_dot(int X, int Y, int color);
 static void draw_horizontal_line(int X, int Y, int toX, int color);
 static void delay(int ms);
+static void print_SSEG(int num);
 
 void main()
 {
     int x = 0;
     int y = SCREEN_HEIGHT / 2;
+    double scaled_x = 0;
     while (1)
     {
-        draw_background();
-        x += *GYRO_X;
-        x = x % SCREEN_WIDTH;
-        draw_dot(x, y, 0xFFF);
 
-        delay(1000);
+        draw_background();
+        scaled_x += (float)(*GYRO_X * 0.01);
+        x = (int)(scaled_x) % SCREEN_WIDTH;
+        draw_dot(x, y, 0x000);
+        print_SSEG(*GYRO_X);
+        delay(100);
     }
 }
 void delay(int ms)
@@ -61,4 +65,9 @@ static void draw_horizontal_line(int X, int Y, int toX, int color)
     {
         draw_dot(X, Y, color);
     }
+}
+
+static void print_SSEG(int num)
+{
+    *SSEG_ADDR = num;
 }
