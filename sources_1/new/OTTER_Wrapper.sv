@@ -24,6 +24,7 @@ module OTTER_Wrapper(
    input CLK,
    input BTNL,
    input BTNC,
+   input BTNU,
    input [15:0] SWITCHES,
    input PS2Clk,
    input PS2Data,
@@ -92,7 +93,7 @@ module OTTER_Wrapper(
    //CONTROLLER DECLARATIONS
    logic [15:0] tiltX, tiltY, tiltZ;
     GyroTop Gyroscope(
-        .CLK(CLK), .X(tiltX), .Y(tiltY), .Z(tiltZ), .JA(JA)
+        .CLK(CLK), .RST(BTNU), .X(tiltX), .Y(tiltY), .Z(tiltZ), .JA(JA)
         );
 
    // Declare VGA Frame Buffer //////////////////////////////////////////////
