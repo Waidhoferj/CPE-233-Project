@@ -53,7 +53,6 @@ parameter [23:0] COUNT_WAIT_MAX = 24'h7FFFFF;		//X"000FFF";
 
 logic [2:0] byte_count;
 logic [11:0] ss_count;
-logic [23:0] count_weight;
 logic [15:0] axis_data [0:2];
 logic [23:0] count_wait;
 //TODO: actually hook up temp data to something
@@ -69,6 +68,7 @@ initial begin
 end
 
 always @(posedge clk)
+begin: spi_interface
 //TODO: Insert spi interface
 begin
 	if(rst) begin
