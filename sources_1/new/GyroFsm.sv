@@ -55,7 +55,6 @@ logic [2:0] byte_count;
 logic [11:0] ss_count;
 logic [15:0] axis_data [0:2];
 logic [23:0] count_wait;
-//TODO: actually hook up temp data to something
 logic [7:0] temp_data;
 
 // ==============================================================================
@@ -69,7 +68,6 @@ end
 
 always @(posedge clk)
 begin: spi_interface
-//TODO: Insert spi interface
 begin
 	if(rst) begin
 		slave_select <= 1;
@@ -221,5 +219,6 @@ begin
 
 
 	endcase
+end
 end
 endmodule
