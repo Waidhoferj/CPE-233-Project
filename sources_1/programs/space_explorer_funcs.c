@@ -1,5 +1,5 @@
-//#include <stdio.h>
-//#include <stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #define ASTEROID_COUNT 10
 
 volatile int *const VG_ADDR = (int *)0x11100000;
@@ -72,11 +72,13 @@ int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_COUNT][
 
     for (int i = 0; i < ASTEROID_COUNT; i++)
     {
-        int asteriod_position[2] = asteroid_positions[i];
+        int x = asteroid_positions[i][0];
+        int y = asteroid_positions[i][1];
+
         //{x differences},{y difference}
-        int x_corner_dif[2] = {asteriod_position[0] + asteroid_width - ship_position[0], asteriod_position[0] - (ship_position[0] + ship_width)};
+        int x_corner_dif[2] = {x + asteroid_width - ship_position[0], x - (ship_position[0] + ship_width)};
         int x_overlap = abs(x_corner_dif[0] + x_corner_dif[1]) < abs(x_corner_dif[0]) + abs(x_corner_dif[1]);
-        int y_corner_dif[2] = {asteriod_position[1] + asteroid_height - ship_position[1], asteriod_position[1] - (ship_position[1] + ship_height)};
+        int y_corner_dif[2] = {y + asteroid_height - ship_position[1], y - (ship_position[1] + ship_height)};
         int y_overlap = abs(y_corner_dif[0] + y_corner_dif[1]) < abs(y_corner_dif[0]) + abs(y_corner_dif[1]);
         if (x_overlap && y_overlap)
             return 1;
@@ -184,7 +186,7 @@ int main(void)
             {
                 int position[2] = {random(0, 60 - asteroid_width - 1), 80};
                 asteroids[asteroid_count][2] = position; //adds new asteroid position to asteroid arra
-                drawAsteroid(position, asteroid_width, asteroid_height);
+                drawAsteroid(position);
                 asteroid_count = asteroid_count++;
             }
 
