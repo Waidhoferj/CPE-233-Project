@@ -209,9 +209,8 @@ int main(void)
 {
 
     initGame();
-    drawSpaceship(spaceship_pos);
 
-    int shipdelay = 32; //32 ms
+    int frame_delay = 32; //32 ms
     int asteroid_timer = 0;
     int asteroid_count = 0; //how many asteroids are on the screen
     //asteroid count also serves as the asteroid number when updating the array
@@ -220,7 +219,7 @@ int main(void)
         draw_background();
         updateSpaceship();
         alive = checkCollision(spaceship_pos, asteroids);
-        if (asteroid_timer == 1000) //updates the asteroid after 1000ms
+        if (asteroid_timer > 1000) //updates the asteroid after 1000ms
         {
             asteroid_timer = 0;
             //draws a new asteroid if there are less than 10 asteroids
@@ -239,6 +238,6 @@ int main(void)
             }
         }
         asteroid_timer = asteroid_timer++;
-        delay(shipdelay); //ships position changes after every shipdelay seconds
+        delay(frame_delay); //ships position changes after every shipdelay seconds
     }
 };
