@@ -151,7 +151,7 @@ void draw_background()
     {
         for (int j = 0; j < screen_width; j++)
         {
-            draw_dot(i, j, bgd_color);
+            draw_dot(j, i, bgd_color);
         }
     }
 }
