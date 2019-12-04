@@ -23,6 +23,8 @@ void delay(int ms);
 
 //A
 void draw_dot(int X, int Y, int color);
+static void draw_horizontal_line(int X, int Y, int toX, int color);
+static void draw_vertical_line(int X, int Y, int toY, int color);
 //updates the asteroid position as its moving down the screen
 void updateAsteroid(int position[2]);
 //set up background
@@ -63,13 +65,6 @@ void delay(int ms)
 
 int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_COUNT][2])
 {
-    //Make these global variables (possibly as structs Ship and Asteroid)
-    //int ship_width = 4;
-    //int ship_height = 7;
-    //int asteroid_width = 4;
-    //int asteroid_height = 4;
-    // bottom left and top right points of the ship
-
     for (int i = 0; i < ASTEROID_COUNT; i++)
     {
         int x = asteroid_positions[i][0];
@@ -115,14 +110,19 @@ void drawAsteroid(int position[2])
 {
     //draws a block asteroid with dimensions asteroid_width by asteroid_height
     //for every row of the asteroid
-    for (int y = position[1]; y < asteroid_height; y++)
-    {
-        //for every column of each row (moving the x position through each row)
-        for (int x = position[0]; x < asteroid_width; x++)
-        {
-            draw_dot(x, y, astrd_color);
-        }
-    }
+    //colors
+    int highlight = 0xC5BE;
+    int midtone = 0xAD1B;
+    int shadow = 0x9C78;
+    //Highlights
+    draw_horizontal_line(position[0] + 1, position[1], position[0] + 2, highlight);
+    draw_vertical_line(position[0], position[1] + 1, position[1] + 2, highlight);
+    //mid
+    draw_horizontal_line(position[0] + 1, position[1] + 1, position[0] + 2, 0xC5BE);
+    draw_horizontal_line(position[0] + 1, position[1] + 2, position[0] + 2, 0xC5BE);
+    //shadow
+    draw_horizontal_line(position[0] + 1, position[1] + 3, position[0] + 2, shadow);
+    draw_vertical_line(position[0] + 3, position[1] + 1, position[1] + 2, shadow);
 }
 
 //A
@@ -134,6 +134,24 @@ void draw_background()
         {
             draw_dot(i, j, bgd_color);
         }
+    }
+}
+
+static void draw_horizontal_line(int X, int Y, int toX, int color)
+{
+    toX++;
+    for (; X != toX; X++)
+    {
+        draw_dot(X, Y, color);
+    }
+}
+
+static void draw_vertical_line(int X, int Y, int toY, int color)
+{
+    toY++;
+    for (; Y != toY; Y++)
+    {
+        draw_dot(X, Y, color);
     }
 }
 
@@ -153,20 +171,24 @@ void updateSpaceship()
 //A
 void drawSpaceship(int position[2])
 {
-    for (int y = position[1]; y < ship_height; y++)
-    {
-        //draw dot for every column of every row of the ship
-        for (int x = position[0]; x < ship_width; x++)
-        {
-            draw_dot(x, y, astrd_color);
-        }
-    }
+    int highlight = 0xFC51;
+    int midtone = 0xFACB;
+    int shadow = 0xE2EB;
+
+    //Highlights
+    draw_vertical_line(position[0], position[1], position[1] + 1, highlight);
+    draw_vertical_line(position[0], position[1] + 3, position[1] + 4, highlight);
+    draw_dot(position[0] + 1, position[1], highlight);
+    //midtone
+    draw_vertical_line(position[0] + 1, position[1] + 1, position[1] + 2, midtone);
+    //shadow
+    draw_vertical_line(position[0] + 2, position[1], position[1] + 1, shadow);
+    draw_vertical_line(position[0] + 2, position[1] + 3, position[1] + 4, shadow);
 }
 
 int main(void)
 {
 
-    
     initGame();
     drawSpaceship(spaceship_pos);
 
