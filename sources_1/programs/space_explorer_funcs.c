@@ -170,11 +170,12 @@ void drawSpaceship(int spaceshipPosition[2])
         }   
     }
 }
+
+
 int main(void){
     
     draw_background();
     initGame(spaceship_pos,asteroids);
-    //setup ship
     drawSpaceship(spaceship_pos);
 
     

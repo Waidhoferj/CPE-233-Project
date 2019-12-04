@@ -168,7 +168,7 @@ begin
 		end
 	Hold: 
 	begin
-		begin_transmission <= 1;
+		begin_transmission <= 0;
 		if (end_transmission)
 		begin
 			if (previous_state == Temp && byte_count != 1)
@@ -191,7 +191,7 @@ begin
 
 	Wait_SS:
 	begin
-		begin_transmission <= 1;
+		begin_transmission <= 0;
 		if (ss_count == SS_COUNT_MAX)
 		begin
 			slave_select <= 1;
