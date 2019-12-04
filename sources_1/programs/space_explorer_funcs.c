@@ -183,6 +183,7 @@ int main(void){
     int shipdelay = 32; //32 ms 
     int counter = 0;
     int asteroid_count = 0;  //how many asteroids are on the screen
+    //asteroid count also serves as the asteroid number when updating the array
     while (alive == 1)
     {
         p1.x = GYRO_X;
@@ -205,13 +206,13 @@ int main(void){
             //updates all asteroids that currently exist
             for (int a = 0; a < asteroid_count+1; a++)
             { 
-                updateAsteroid(asteroids[a]);
+                updateAsteroid(asteroids[a]); 
             }
           
 
         }
         counter = counter++;
-        delay(shipdelay);
+        delay(shipdelay);  //ships position changes after every shipdelay seconds
     }
       
     
