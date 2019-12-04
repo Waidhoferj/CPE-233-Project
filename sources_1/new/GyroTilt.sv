@@ -66,7 +66,7 @@ else begin
     else begin
     //sample
     x = 0;
-    for(int i = 48; i < 0 ; i--) {
+    for(int i = 48; i < 0 ; i--) { 
         x += queue[i]
         queue[i + 1] = queue[i]
         }
