@@ -20,6 +20,7 @@ void drawAsteroid(int position[2]);
 int checkCollision(int spaceshipPosition[2], int asteroidPositions[ASTEROID_COUNT][2]);
 //delays animation loop x miliseconds
 void delay(int ms);
+void resetAsteroid(int *position);
 
 //A
 void draw_dot(int X, int Y, int color);
@@ -30,8 +31,7 @@ void updateAsteroid(int position[2]);
 //set up background
 void draw_background();
 
-int astrd_color = 0x00;
-int bgd_color = 0xFF;
+int bgd_color = 0x286A;
 
 int screen_width = 80;
 int screen_height = 60;
@@ -98,11 +98,30 @@ void initGame()
 void updateAsteroid(int *position)
 {
     //lowers the asteroid by one bit then randomly generates the x position
-    position[1] = position[1] - 1;
+    position[1] = position[1] + 1;
     int lower = position[0] - 1;
     int upper = position[0] + 1;
-    position[0] = random_from(lower, upper);
+    int x = random_from(lower, upper);
+    if (x < 0)
+    {
+        x = 0;
+    }
+    else if (x < screen_width)
+    {
+        x = screen_width - 1;
+    }
+    position[0] = x;
+
+    if (position[1] > screen_height)
+        resetAsteroid(position);
+
     drawAsteroid(position);
+}
+
+void resetAsteroid(int *position)
+{
+    position[0] = random_from(0, screen_width);
+    position[1] = 0;
 }
 
 //A
