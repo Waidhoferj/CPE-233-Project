@@ -11,7 +11,7 @@ volatile int *const GYRO_Z = (int *)0x110a0000;
 //Resets all positions and gets game ready to start
 void initGame();
 //Generates random number between upper and lower
-int random(int lower, int upper);
+int random_from(int lower, int upper);
 //Draws spaceship at position where position is the upper lefthand corner of the ship
 void drawSpaceship(int position[2]);
 //Draws spaceship at position where position is the upper lefthand corner of the ship
@@ -45,7 +45,7 @@ int ship_height = 5;
 int asteroid_width = 4;
 int asteroid_height = 4;
 
-int random(int lower, int upper)
+int random_from(int lower, int upper)
 {
     return (rand() %
             (upper - lower + 1)) +
@@ -106,7 +106,7 @@ void updateAsteroid(int *position)
     position[1] = position[1] - 1;
     int lower = position[0] - 1;
     int upper = position[0] + 1;
-    position[0] = random(lower, upper);
+    position[0] = random_from(lower, upper);
     drawAsteroid(position);
 }
 
@@ -184,7 +184,7 @@ int main(void)
             //draws a new asteroid if there are less than 10 asteroids
             if (asteroid_count <= 10)
             {
-                int position[2] = {random(0, 60 - asteroid_width - 1), 80};
+                int position[2] = {random_from(0, 60 - asteroid_width - 1), 80};
                 asteroids[asteroid_count][2] = position; //adds new asteroid position to asteroid arra
                 drawAsteroid(position);
                 asteroid_count = asteroid_count++;
