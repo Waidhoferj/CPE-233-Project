@@ -166,7 +166,7 @@ void drawSpaceship(int position[2])
 int main(void)
 {
 
-    draw_background();
+    
     initGame();
     drawSpaceship(spaceship_pos);
 
@@ -176,6 +176,7 @@ int main(void)
     //asteroid count also serves as the asteroid number when updating the array
     while (alive)
     {
+        draw_background();
         updateSpaceship();
         alive = checkCollision(spaceship_pos, asteroids);
         if (asteroid_timer == 1000) //updates the asteroid after 1000ms
