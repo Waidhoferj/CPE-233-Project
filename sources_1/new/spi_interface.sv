@@ -80,7 +80,7 @@ module spi_interface(
 								//send bit
 								if (rx_count < RX_COUNT_MAX)
 								begin
-									if (sclk_previous && sclk_buffer)
+									if (sclk_previous && !sclk_buffer)
 										mosi <= shift_register[7];
 									//recieve bit
 									else if (!sclk_previous && sclk_buffer)
@@ -100,7 +100,7 @@ module spi_interface(
 						   // hold
 							Hold :
 								begin
-									end_transmission <= 1;
+									end_transmission <= 0;
 									if (slave_select)
 									begin
 										mosi <= 1;
@@ -125,11 +125,11 @@ module spi_interface(
 			begin: spi_clk_generation
 				
 				begin
-					if (rst == 1'b1)
+					if (rst)
 					begin
-						sclk_previous <= 1'b1;
-						sclk_buffer <= 1'b1;
-						spi_clk_count <= {12{1'b0}};
+						sclk_previous <= 1;
+						sclk_buffer <= 1;
+						spi_clk_count <= 0;
 					end
 					
 					else if (current_state == Rx_Tx)
@@ -137,16 +137,16 @@ module spi_interface(
 						if (spi_clk_count == SPI_CLK_COUNT_MAX)
 						begin
 							sclk_buffer <= (~sclk_buffer);
-							spi_clk_count <= {12{1'b0}};
+							spi_clk_count <= 0;
 						end
 						else
 						begin
 							sclk_previous <= sclk_buffer;
-							spi_clk_count <= spi_clk_count + 1'b1;
+							spi_clk_count <= spi_clk_count + 1;
 						end
 					end
 					else
-						sclk_previous <= 1'b1;
+						sclk_previous <= 1;
 				end
 			end
 			
