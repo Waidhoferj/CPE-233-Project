@@ -287,23 +287,21 @@ int main(void)
         updateGyroTilt();
         updateSpaceship();
         // alive = checkCollision(spaceship_pos, asteroids);
+
+        if (spawn_timer > 10 && asteroid_count < ASTEROID_MAX)
+        {
+            spawn_timer = 0;
+            int position[2] = {random_from(1, 80 - asteroid_width - 1), 0};
+            asteroids[asteroid_count][0] = position[0];
+            asteroids[asteroid_count][1] = position[1];
+            asteroid_count++;
+        }
         if (asteroid_timer > 3)
         {
             asteroid_timer = 0;
             for (int a = 0; a < asteroid_count; a++)
             {
                 updateAsteroid(asteroids[a]);
-            }
-        }
-        if (spawn_timer > 10)
-        {
-            if (asteroid_count < ASTEROID_MAX)
-            {
-                spawn_timer = 0;
-                int position[2] = {random_from(1, 80 - asteroid_width - 1), 0};
-                asteroids[asteroid_count][0] = position[0];
-                asteroids[asteroid_count][1] = position[1];
-                asteroid_count++;
             }
         }
 
