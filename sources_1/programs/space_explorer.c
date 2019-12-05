@@ -63,7 +63,9 @@ int asteroids[ASTEROID_MAX][2] = {0};
 
 int frame_delay = 10;
 int asteroid_timer = 0;
+int spawn_timer = 0;
 int asteroid_count = 0;
+int score = 0;
 
 //Sizes
 int ship_width = 3;
@@ -155,6 +157,7 @@ void updateAsteroid(int *position)
 
 void resetAsteroid(int *position)
 {
+    score++;
     position[0] = random_from(0, screen_width);
     position[1] = 0;
 }
@@ -283,7 +286,7 @@ int main(void)
         draw_background();
         updateGyroTilt();
         updateSpaceship();
-        // alive = checkCollision(spaceship_pos, asteroids);
+        alive = checkCollision(spaceship_pos, asteroids);
         if (asteroid_timer > 5)
         {
             asteroid_timer = 0;
