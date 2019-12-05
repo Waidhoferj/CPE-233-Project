@@ -19,9 +19,6 @@ module GyroTop (
    logic [7:0]   send_data;
    logic [7:0]   recieved_data;
    logic [7:0]   temp_data;
-   logic [15:0]  x_axis_data;
-   logic [15:0]  y_axis_data;
-   logic [15:0]  z_axis_data;
    logic         slave_select;
 
 
@@ -38,9 +35,9 @@ master_interface GFSM (
 						.rst(RST),
 						.slave_select(slave_select),
 						.start(1),
-						.x_axis_data(x_axis_data),
-						.y_axis_data(y_axis_data),
-						.z_axis_data(z_axis_data)
+						.x_axis_data(X),
+						.y_axis_data(Y),
+						.z_axis_data(Z)
 			);
 
 spi_interface_2 SPII(
@@ -54,17 +51,6 @@ spi_interface_2 SPII(
 						.end_transmission(end_transmission),
 						.mosi(JA[1]),
 						.sclk(JA[3])
-			);
-
-GyroTilt GT(
-						.dx(x_axis_data),
-						.dy(y_axis_data),
-						.dz(z_axis_data),
-						.RST(RST),
-					   .CLK(CLK),
-						.X(X),
-						.Y(Y),
-						.Z(Z)
 			);
 
     assign JA[0] = slave_select;
