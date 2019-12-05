@@ -105,6 +105,9 @@ void initGame()
     }
 }
 
+//Updates
+//============================================================================================================
+
 void updateAsteroid(int *position)
 {
     //lowers the asteroid by one bit then randomly generates the x position
@@ -140,7 +143,7 @@ void updateSpaceship()
     // spaceship_pos[1] += *GYRO_Y * .0001;
 }
 
-//DRAW
+//Draw
 //============================================================================================================
 
 void drawAsteroid(int position[2])
