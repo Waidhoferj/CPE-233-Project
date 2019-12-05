@@ -10,6 +10,7 @@ volatile int *const VG_COLOR = (int *)0x11140000;
 volatile int *const GYRO_X = (int *)0x11080000;
 volatile int *const GYRO_Y = (int *)0x11090000;
 volatile int *const GYRO_Z = (int *)0x110a0000;
+volatile int *const SSEG_ADDR = (int *)0x110C0000;
 
 //Prototypes
 //============================================================================================================
@@ -34,6 +35,9 @@ static void draw_vertical_line(int X, int Y, int toY, int color);
 void updateAsteroid(int position[2]);
 //set up background
 void draw_background();
+int bin_val(int val);
+void updateGyroTilt();
+static void print_SSEG(int num);
 
 //Global Variables
 //============================================================================================================
@@ -43,6 +47,10 @@ int screen_height = 60;
 //Determines if the player's ship hasn't been hit (0 when hit)
 int alive = 1;
 int spaceship_pos[2];
+//X and y tilt values
+int tilt[2] = {0};
+//X and y angular velocity value queues for averaging
+int velocity_queues[2][50] = {{0}, {0}};
 //An array of asteroid positions
 int asteroids[10][2] = {0};
 
@@ -88,6 +96,23 @@ int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_COUNT][
             return 1;
     }
     return 0;
+}
+
+int bin_val(int val)
+{
+    if (-50 < val && val < 50)
+        return 0;
+    else if (val < -90)
+        return -90;
+    else if (val > 90)
+        return 90;
+    else
+        return val;
+}
+
+static void print_SSEG(int num)
+{
+    *SSEG_ADDR = num;
 }
 
 //Gamestate
@@ -139,8 +164,28 @@ void resetAsteroid(int *position)
 
 void updateSpaceship()
 {
-    spaceship_pos[0] += *GYRO_X % screen_width;
-    // spaceship_pos[1] += *GYRO_Y * .0001;
+    spaceship_pos[0] = tilt[0];
+    //FOR TESTING
+    print_SSEG(spaceship_pos[0]);
+}
+
+void updateGyroTilt()
+{
+    int sums[2] = {0};
+    for (int i = 48; i < 0; i--)
+    {
+        velocity_queues[0][i + 1] = velocity_queues[0][i];
+        velocity_queues[1][i + 1] = velocity_queues[1][i];
+        sums[0] += velocity_queues[0][i];
+        sums[1] += velocity_queues[1][i];
+    }
+    //add latest reading to the velocity queue
+    velocity_queues[0][0] = *GYRO_X;
+    velocity_queues[1][0] = *GYRO_Y;
+    //Update tilt
+
+    tilt[0] = bin_val(sums[0] / 50);
+    tilt[1] = bin_val(sums[1] / 50);
 }
 
 //Draw
@@ -228,6 +273,7 @@ int main(void)
     while (alive)
     {
         draw_background();
+        updateGyroTilt();
         updateSpaceship();
         // alive = checkCollision(spaceship_pos, asteroids);
         if (asteroid_timer > 1000) //updates the asteroid after 1000ms
