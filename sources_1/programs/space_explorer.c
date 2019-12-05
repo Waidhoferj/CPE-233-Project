@@ -61,7 +61,7 @@ int velocity_queues[2][VEL_Q_LEN] = {{0}, {0}};
 //An array of asteroid positions
 int asteroids[ASTEROID_MAX][2] = {0};
 
-int frame_delay = 70;
+int frame_delay = 10;
 int asteroid_timer = 0;
 int asteroid_count = 0;
 
@@ -165,7 +165,7 @@ void updateSpaceship()
     {
         spaceship_pos[0] = (spaceship_pos[0] + 1) % screen_width;
     }
-    else if (*BTN_LEFT_ADDR && !*BTN_LEFT_ADDR)
+    else if (*BTN_LEFT_ADDR && !*BTN_RIGHT_ADDR)
     {
         spaceship_pos[0] < 1 ? spaceship_pos[0] = screen_width - 1 : spaceship_pos[0]--;
     }
