@@ -143,7 +143,6 @@ void initGame()
         asteroids[i][0] = 0;
         asteroids[i][1] = 0;
     }
-    runGame();
 }
 
 static int runGame()
@@ -199,9 +198,6 @@ static void drawL()
             delay(20);
         }
     }
-
-    initGame();
-    runGame();
 }
 
 //Updates
