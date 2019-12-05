@@ -137,6 +137,7 @@ void initGame()
     int spawn_timer = 0;
     int asteroid_count = 0;
     int score = 0;
+    int alive = 1;
 
     for (int i = 0; i < ASTEROID_MAX; i++)
     {
