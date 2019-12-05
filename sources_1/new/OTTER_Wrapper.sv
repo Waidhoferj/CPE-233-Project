@@ -25,6 +25,8 @@ module OTTER_Wrapper(
    input BTNL,
    input BTNC,
    input BTNU,
+   input BTNR,
+   input BTND,
    input [15:0] SWITCHES,
    input PS2Clk,
    input PS2Data,
@@ -49,6 +51,11 @@ module OTTER_Wrapper(
     localparam GYRO_IN_X = 32'h11080000;
     localparam GYRO_IN_Y = 32'h11090000;
     localparam GYRO_IN_Z = 32'h110a0000;
+    localparam BTN_LEFT_ADDR = 32'h110b0000;
+    localparam BTN_RIGHT_ADDR = 32'h110c0000;
+    localparam BTN_TOP_ADDR = 32'h110d0000;
+    localparam BTN_BOTTOM_ADDR = 32'h110e0000;
+    localparam BTN_CENTER_ADDR = 32'h110f0000;
     
            
     // OUTPUT PORT IDS ///////////////////////////////////////////////////////
@@ -116,7 +123,7 @@ module OTTER_Wrapper(
    
 
     // Connect Signals ////////////////////////////////////////////////////////////
-   assign s_reset = BTNC;
+   assign s_reset = 0;
    
    //assign LEDS[15]=keyboard_int;
    // Connect Board peripherals (Memory Mapped IO devices) to IOBUS /////////////////////////////////////////
@@ -147,6 +154,13 @@ module OTTER_Wrapper(
             GYRO_IN_X: IOBUS_in[15:0] = tiltX;
             GYRO_IN_Y: IOBUS_in[15:0] = tiltY;
             GYRO_IN_Z: IOBUS_in[15:0] = tiltZ;
+            BTN_RIGHT_ADDR: IOBUS_in[0] = BTNR;
+            BTN_LEFT_ADDR: IOBUS_in[0] = BTNL;
+            BTN_TOP_ADDR: IOBUS_in[0] = BTNU;
+            BTN_BOTTOM_ADDR: IOBUS_in[0] = BTND;
+            BTN_CENTER_ADDR: IOBUS_in[0] = BTNC;
+
+            
             default: IOBUS_in=32'b0;
         endcase
     end
