@@ -27,22 +27,11 @@ parameter rate = 1000; //Scales dps to correct time sampling rate
 //Functionality
 //=============================================
 
-//Outputs will reflect internal state
-assign X = x;
-assign Y = y;
-assign Z = z;
-
 //FUNCTIONS
-  function int bin_val(input int val);
-    if(val > -42 && val < 10) return 0;
+function int bin_val(input int val);
+    if(val > -42 && val < 10) return 0;
     else return val;
-  endfunction
- 
-  initial begin
-    x=sum(10,5);
-    $display("\tValue of x = %0d",x);
-  end
-endmodule
+    endfunction
 
 //Set internal variables to zero at start
 initial begin
@@ -65,14 +54,14 @@ else begin
     if (slck < 50000) slck++; //increment
     else begin
     //sample
-    x = 0;
-    for(int i = 48; i < 0 ; i--) {
-        x += queue[i]
-        queue[i + 1] = queue[i]
-        }
-    queue[0] = dx/rate;
-    x/= 50;
-    x = bin(x)
+//    x = 0;
+//    for(int i = 48; i < 0 ; i--) begin
+//        x += queue[i];
+//        queue[i + 1] = queue[i];
+//        end
+//    queue[0] = dx/rate;
+//    x/= 50;
+    x += bin_val(dx/rate);
     
         y = y + dy/rate;
         z = z + dz/rate;

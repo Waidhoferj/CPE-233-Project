@@ -38,9 +38,9 @@ master_interface GFSM (
 						.rst(RST),
 						.slave_select(slave_select),
 						.start(1),
-						.x_axis_data(X),
-						.y_axis_data(Y),
-						.z_axis_data(Z)
+						.x_axis_data(x_axis_data),
+						.y_axis_data(y_axis_data),
+						.z_axis_data(z_axis_data)
 			);
 
 spi_interface_2 SPII(
@@ -56,16 +56,16 @@ spi_interface_2 SPII(
 						.sclk(JA[3])
 			);
 
-//GyroTilt GT(
-	//					.dx(x_axis_data),
-		//				.dy(y_axis_data),
-//						.dz(z_axis_data),
-//						.RST(RST),
-//					.CLK(CLK),
-//						.X(X),
-//						.Y(Y),
-//						.Z(Z)
-//			);
+GyroTilt GT(
+						.dx(x_axis_data),
+						.dy(y_axis_data),
+						.dz(z_axis_data),
+						.RST(RST),
+					   .CLK(CLK),
+						.X(X),
+						.Y(Y),
+						.Z(Z)
+			);
 
     assign JA[0] = slave_select;
     
