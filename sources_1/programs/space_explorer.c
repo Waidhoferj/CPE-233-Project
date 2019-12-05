@@ -216,6 +216,7 @@ void updateAsteroid(int *position)
 void resetAsteroid(int *position)
 {
     score++;
+    print_SSEG(score);
     position[0] = random_from(0, screen_width);
     position[1] = 0;
 }
@@ -231,7 +232,6 @@ void updateSpaceship()
         spaceship_pos[0] < 1 ? spaceship_pos[0] = screen_width - 1 : spaceship_pos[0]--;
     }
     //FOR TESTING
-    print_SSEG(spaceship_pos[0]);
     drawSpaceship(spaceship_pos);
 }
 
@@ -341,7 +341,6 @@ int main(void)
         initGame();
         int res = runGame();
         drawL();
-        print_SSEG(4);
     }
 
     //how many asteroids are on the screen
