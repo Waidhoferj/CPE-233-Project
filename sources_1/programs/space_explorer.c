@@ -2,11 +2,17 @@
 #include <stdlib.h>
 #define ASTEROID_COUNT 10
 
+//Addresses
+//============================================================================================================
+
 volatile int *const VG_ADDR = (int *)0x11100000;
 volatile int *const VG_COLOR = (int *)0x11140000;
 volatile int *const GYRO_X = (int *)0x11080000;
 volatile int *const GYRO_Y = (int *)0x11090000;
 volatile int *const GYRO_Z = (int *)0x110a0000;
+
+//Prototypes
+//============================================================================================================
 
 //Resets all positions and gets game ready to start
 void initGame();
@@ -21,8 +27,6 @@ int checkCollision(int spaceshipPosition[2], int asteroidPositions[ASTEROID_COUN
 //delays animation loop x miliseconds
 void delay(int ms);
 void resetAsteroid(int *position);
-
-//A
 void draw_dot(int X, int Y, int color);
 static void draw_horizontal_line(int X, int Y, int toX, int color);
 static void draw_vertical_line(int X, int Y, int toY, int color);
@@ -31,22 +35,27 @@ void updateAsteroid(int position[2]);
 //set up background
 void draw_background();
 
+//Global Variables
+//============================================================================================================
 int bgd_color = 0x286A;
-
 int screen_width = 80;
 int screen_height = 60;
 //Determines if the player's ship hasn't been hit (0 when hit)
 int alive = 1;
 int spaceship_pos[2];
 //An array of asteroid positions
-//int astrd_cnt = 10;
 int asteroids[10][2] = {0};
 
+//Sizes
 int ship_width = 3;
 int ship_height = 5;
 int asteroid_width = 4;
 int asteroid_height = 4;
 
+//Function Definitions
+
+//Helpers
+//============================================================================================================
 int random_from(int lower, int upper)
 {
     return (rand() %
@@ -81,7 +90,8 @@ int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_COUNT][
     return 0;
 }
 
-//A
+//Gamestate
+//============================================================================================================
 void initGame()
 {
     //since spaceship pos is top left corner of ship, have to calc the position based of the width/height
@@ -95,7 +105,6 @@ void initGame()
     }
 }
 
-//A
 void updateAsteroid(int *position)
 {
     //lowers the asteroid by one bit then randomly generates the x position
@@ -125,11 +134,17 @@ void resetAsteroid(int *position)
     position[1] = 0;
 }
 
-//A
+void updateSpaceship()
+{
+    spaceship_pos[0] += *GYRO_X % screen_width;
+    // spaceship_pos[1] += *GYRO_Y * .0001;
+}
+
+//DRAW
+//============================================================================================================
+
 void drawAsteroid(int position[2])
 {
-    //draws a block asteroid with dimensions asteroid_width by asteroid_height
-    //for every row of the asteroid
     //colors
     int highlight = 0xC5BE;
     int midtone = 0xAD1B;
@@ -145,7 +160,23 @@ void drawAsteroid(int position[2])
     draw_vertical_line(position[0] + 3, position[1] + 1, position[1] + 2, shadow);
 }
 
-//A
+void drawSpaceship(int position[2])
+{
+    int highlight = 0xFC51;
+    int midtone = 0xFACB;
+    int shadow = 0xE2EB;
+
+    //Highlights
+    draw_vertical_line(position[0], position[1], position[1] + 1, highlight);
+    draw_vertical_line(position[0], position[1] + 3, position[1] + 4, highlight);
+    draw_dot(position[0] + 1, position[1], highlight);
+    //midtone
+    draw_vertical_line(position[0] + 1, position[1] + 1, position[1] + 2, midtone);
+    //shadow
+    draw_vertical_line(position[0] + 2, position[1], position[1] + 1, shadow);
+    draw_vertical_line(position[0] + 2, position[1] + 3, position[1] + 4, shadow);
+}
+
 void draw_background()
 {
     for (int i = 0; i < screen_height; i++)
@@ -175,46 +206,22 @@ static void draw_vertical_line(int X, int Y, int toY, int color)
     }
 }
 
-//A
 void draw_dot(int X, int Y, int color)
 {
     *VG_ADDR = (Y << 7) | X;
     *VG_COLOR = color;
 }
 
-void updateSpaceship()
-{
-    spaceship_pos[0] += *GYRO_X % screen_width;
-    // spaceship_pos[1] += *GYRO_Y * .0001;
-}
-
-//A
-void drawSpaceship(int position[2])
-{
-    int highlight = 0xFC51;
-    int midtone = 0xFACB;
-    int shadow = 0xE2EB;
-
-    //Highlights
-    draw_vertical_line(position[0], position[1], position[1] + 1, highlight);
-    draw_vertical_line(position[0], position[1] + 3, position[1] + 4, highlight);
-    draw_dot(position[0] + 1, position[1], highlight);
-    //midtone
-    draw_vertical_line(position[0] + 1, position[1] + 1, position[1] + 2, midtone);
-    //shadow
-    draw_vertical_line(position[0] + 2, position[1], position[1] + 1, shadow);
-    draw_vertical_line(position[0] + 2, position[1] + 3, position[1] + 4, shadow);
-}
-
+//MAIN
+//============================================================================================================
 int main(void)
 {
-
     initGame();
-
     int frame_delay = 32; //32 ms
     int asteroid_timer = 0;
     int asteroid_count = 0; //how many asteroids are on the screen
     //asteroid count also serves as the asteroid number when updating the array
+
     while (alive)
     {
         draw_background();
