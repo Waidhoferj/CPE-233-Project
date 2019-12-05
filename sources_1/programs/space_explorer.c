@@ -106,12 +106,12 @@ int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_MAX][2]
 
 int bin_val(int val)
 {
-    if (-50 < val && val < 50)
+    if (-200 < val && val < 200)
         return 0;
-    else if (val < -90)
-        return -90;
-    else if (val > 90)
-        return 90;
+    else if (val < -500)
+        return -500;
+    else if (val > 500)
+        return 500;
     else
         return val;
 }
