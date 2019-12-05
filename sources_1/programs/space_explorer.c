@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define ASTEROID_MAX 10
+#define ASTEROID_MAX 20
 #define VEL_Q_LEN 50
 
 //Addresses
@@ -45,6 +45,8 @@ int bin_val(int val);
 void updateGyroTilt();
 static void print_SSEG(int num);
 static int convertGyro(int vel);
+static void drawL();
+static int runGame();
 
 //Global Variables
 //============================================================================================================
@@ -131,11 +133,75 @@ void initGame()
     int bottom_padding = 3;
     spaceship_pos[0] = (79 - ship_width / 2) / 2;
     spaceship_pos[1] = 59 - ship_height - bottom_padding;
+    int asteroid_timer = 0;
+    int spawn_timer = 0;
+    int asteroid_count = 0;
+    int score = 0;
+
     for (int i = 0; i < ASTEROID_MAX; i++)
     {
         asteroids[i][0] = 0;
         asteroids[i][1] = 0;
     }
+    runGame();
+}
+
+static int runGame()
+{
+    while (alive)
+    {
+        draw_background();
+        updateGyroTilt();
+        updateSpaceship();
+        alive = !checkCollision(spaceship_pos, asteroids);
+
+        if (spawn_timer > 10 && asteroid_count < ASTEROID_MAX)
+        {
+            spawn_timer = 0;
+            int position[2] = {random_from(1, 80 - asteroid_width - 1), 0};
+            asteroids[asteroid_count][0] = position[0];
+            asteroids[asteroid_count][1] = position[1];
+            asteroid_count++;
+        }
+        if (asteroid_timer > 3)
+        {
+            asteroid_timer = 0;
+            for (int a = 0; a < asteroid_count; a++)
+            {
+                updateAsteroid(asteroids[a]);
+            }
+        }
+
+        for (int a = 0; a < asteroid_count; a++)
+        {
+            drawAsteroid(asteroids[a]);
+        }
+        asteroid_timer++;
+        spawn_timer++;
+        delay(frame_delay); //amount of time before next frame
+    }
+    return 1;
+}
+
+static void drawL()
+{
+
+    while (!*BTN_BOTTOM_ADDR)
+    {
+        for (int i = 9; i < 20; i++)
+        {
+            draw_vertical_line(i, 10, 50, 0xFFF);
+            delay(20);
+        }
+        for (int i = 40; i < 51; i++)
+        {
+            draw_horizontal_line(19, i, 50, 0xFFF);
+            delay(20);
+        }
+    }
+
+    initGame();
+    runGame();
 }
 
 //Updates
@@ -272,40 +338,13 @@ void draw_dot(int X, int Y, int color)
 //============================================================================================================
 int main(void)
 {
-    initGame();
+    while (1)
+    {
+        initGame();
+        int res = runGame();
+        drawL();
+    }
+
     //how many asteroids are on the screen
     //asteroid count also serves as the asteroid number when updating the array
-
-    while (alive)
-    {
-        draw_background();
-        updateGyroTilt();
-        updateSpaceship();
-        alive = checkCollision(spaceship_pos, asteroids);
-
-        if (spawn_timer > 10 && asteroid_count < ASTEROID_MAX)
-        {
-            spawn_timer = 0;
-            int position[2] = {random_from(1, 80 - asteroid_width - 1), 0};
-            asteroids[asteroid_count][0] = position[0];
-            asteroids[asteroid_count][1] = position[1];
-            asteroid_count++;
-        }
-        if (asteroid_timer > 3)
-        {
-            asteroid_timer = 0;
-            for (int a = 0; a < asteroid_count; a++)
-            {
-                updateAsteroid(asteroids[a]);
-            }
-        }
-
-        for (int a = 0; a < asteroid_count; a++)
-        {
-            drawAsteroid(asteroids[a]);
-        }
-        asteroid_timer++;
-        spawn_timer++;
-        delay(frame_delay); //amount of time before next frame
-    }
 };
