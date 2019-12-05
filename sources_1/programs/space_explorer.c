@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define ASTEROID_COUNT 10
+#define ASTEROID_MAX 10
 
 //Addresses
 //============================================================================================================
@@ -24,7 +24,7 @@ void drawSpaceship(int position[2]);
 //Draws spaceship at position where position is the upper lefthand corner of the ship
 void drawAsteroid(int position[2]);
 //iterates through asteroid positions and sees if they come in contact with ship
-int checkCollision(int spaceshipPosition[2], int asteroidPositions[ASTEROID_COUNT][2]);
+int checkCollision(int spaceshipPosition[2], int asteroidPositions[ASTEROID_MAX][2]);
 //delays animation loop x miliseconds
 void delay(int ms);
 void resetAsteroid(int *position);
@@ -54,6 +54,10 @@ int velocity_queues[2][50] = {{0}, {0}};
 //An array of asteroid positions
 int asteroids[10][2] = {0};
 
+int frame_delay = 70;
+int asteroid_timer = 0;
+int asteroid_count = 0;
+
 //Sizes
 int ship_width = 3;
 int ship_height = 5;
@@ -80,9 +84,9 @@ void delay(int ms)
     };
 }
 
-int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_COUNT][2])
+int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_MAX][2])
 {
-    for (int i = 0; i < ASTEROID_COUNT; i++)
+    for (int i = 0; i < asteroid_count; i++)
     {
         int x = asteroid_positions[i][0];
         int y = asteroid_positions[i][1];
@@ -123,7 +127,7 @@ void initGame()
     int bottom_padding = 3;
     spaceship_pos[0] = (79 - ship_width / 2) / 2;
     spaceship_pos[1] = 59 - ship_height - bottom_padding;
-    for (int i = 0; i < ASTEROID_COUNT; i++)
+    for (int i = 0; i < ASTEROID_MAX; i++)
     {
         asteroids[i][0] = 0;
         asteroids[i][1] = 0;
@@ -137,23 +141,9 @@ void updateAsteroid(int *position)
 {
     //lowers the asteroid by one bit then randomly generates the x position
     position[1] = position[1] + 1;
-    int lower = position[0] - 1;
-    int upper = position[0] + 1;
-    int x = random_from(lower, upper);
-    if (x < 0)
-    {
-        x = 0;
-    }
-    else if (x < screen_width)
-    {
-        x = screen_width - 1;
-    }
-    position[0] = x;
 
     if (position[1] > screen_height)
         resetAsteroid(position);
-
-    drawAsteroid(position);
 }
 
 void resetAsteroid(int *position)
@@ -266,9 +256,7 @@ void draw_dot(int X, int Y, int color)
 int main(void)
 {
     initGame();
-    int frame_delay = 100;
-    int asteroid_timer = 0;
-    int asteroid_count = 0; //how many asteroids are on the screen
+    //how many asteroids are on the screen
     //asteroid count also serves as the asteroid number when updating the array
 
     while (alive)
@@ -277,11 +265,11 @@ int main(void)
         updateGyroTilt();
         updateSpaceship();
         // alive = checkCollision(spaceship_pos, asteroids);
-        if (asteroid_timer > 1000) //updates the asteroid after 1000ms
+        if (asteroid_timer > 5)
         {
             asteroid_timer = 0;
             //draws a new asteroid if there are less than 10 asteroids
-            if (asteroid_count <= 10)
+            if (asteroid_count < ASTEROID_MAX)
             {
                 int position[2] = {random_from(1, 80 - asteroid_width - 1), 0};
                 asteroids[asteroid_count][0] = position[0];
