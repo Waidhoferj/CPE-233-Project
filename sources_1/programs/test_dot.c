@@ -8,11 +8,11 @@ volatile int *const GYRO_X = (int *)0x11080000;
 volatile int *const GYRO_Y = (int *)0x11090000;
 volatile int *const GYRO_Z = (int *)0x110a0000;
 volatile int *const SSEG_ADDR = (int *)0x110C0000;
-volatile int *const BTN_LEFT_ADDR = 0x110b0000;
-volatile int *const BTN_RIGHT_ADDR = 0x110c0000;
-volatile int *const BTN_TOP_ADDR = 0x110d0000;
-volatile int *const BTN_BOTTOM_ADDR = 0x110e0000;
-volatile int *const BTN_CENTER_ADDR = 0x110f0000;
+volatile int *const BTN_LEFT_ADDR = (int *)0x110b0000;
+volatile int *const BTN_RIGHT_ADDR = (int *)0x110c0000;
+volatile int *const BTN_TOP_ADDR = (int *)0x110d0000;
+volatile int *const BTN_BOTTOM_ADDR = (int *)0x110e0000;
+volatile int *const BTN_CENTER_ADDR = (int *)0x110f0000;
 int const SCREEN_WIDTH = 80;
 int const SCREEN_HEIGHT = 60;
 
