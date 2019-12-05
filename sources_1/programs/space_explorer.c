@@ -287,29 +287,29 @@ int main(void)
         updateGyroTilt();
         updateSpaceship();
         alive = checkCollision(spaceship_pos, asteroids);
-        if (asteroid_timer > 5)
+        if (asteroid_timer > 3)
         {
             asteroid_timer = 0;
-            //draws a new asteroid if there are less than 10 asteroids
-            if (asteroid_count < ASTEROID_MAX)
-            {
-                int position[2] = {random_from(1, 80 - asteroid_width - 1), 0};
-                asteroids[asteroid_count][0] = position[0];
-                asteroids[asteroid_count][1] = position[1];
-                asteroid_count++;
-            }
-
-            //updates all asteroids that currently exist
             for (int a = 0; a < asteroid_count; a++)
             {
                 updateAsteroid(asteroids[a]);
             }
         }
+        if (spawn_timer > 10 && asteroid_count < ASTEROID_MAX)
+        {
+            spawn_timer = 0;
+            int position[2] = {random_from(1, 80 - asteroid_width - 1), 0};
+            asteroids[asteroid_count][0] = position[0];
+            asteroids[asteroid_count][1] = position[1];
+            asteroid_count++;
+        }
+
         for (int a = 0; a < asteroid_count; a++)
         {
             drawAsteroid(asteroids[a]);
         }
         asteroid_timer++;
+        spawn_timer++;
         delay(frame_delay); //amount of time before next frame
     }
 };
