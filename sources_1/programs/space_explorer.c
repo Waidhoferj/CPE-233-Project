@@ -185,8 +185,7 @@ void updateGyroTilt()
     velocity_queues[0][0] = *GYRO_X;
     velocity_queues[1][0] = *GYRO_Y;
     //Update tilt
-
-    tilt[0] = bin_val(sums[0] / q_len);
+    tilt[0] = bin_val(*GYRO_X) / 3 + 10;
     tilt[1] = bin_val(sums[1] / q_len);
 }
 
