@@ -266,7 +266,7 @@ void draw_dot(int X, int Y, int color)
 int main(void)
 {
     initGame();
-    int frame_delay = 1000; //32 ms
+    int frame_delay = 100;
     int asteroid_timer = 0;
     int asteroid_count = 0; //how many asteroids are on the screen
     //asteroid count also serves as the asteroid number when updating the array
@@ -286,15 +286,18 @@ int main(void)
                 int position[2] = {random_from(1, 80 - asteroid_width - 1), 0};
                 asteroids[asteroid_count][0] = position[0];
                 asteroids[asteroid_count][1] = position[1];
-                drawAsteroid(position);
-                asteroid_count = asteroid_count++;
+                asteroid_count++;
             }
 
             //updates all asteroids that currently exist
-            for (int a = 0; a < asteroid_count + 1; a++)
+            for (int a = 0; a < asteroid_count; a++)
             {
                 updateAsteroid(asteroids[a]);
             }
+        }
+        for (int a = 0; a < asteroid_count; a++)
+        {
+            drawAsteroid(asteroids[a]);
         }
         asteroid_timer++;
         delay(frame_delay); //amount of time before next frame
