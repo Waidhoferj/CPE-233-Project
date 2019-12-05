@@ -28,7 +28,7 @@ void main()
     int y = SCREEN_HEIGHT / 2;
     while (1)
     {
-        if (*BTN_LEFT_ADDR)
+        if (*BTN_BOTTOM_ADDR)
             y = SCREEN_HEIGHT / 2 + 10;
         else
             y = SCREEN_HEIGHT / 2;
