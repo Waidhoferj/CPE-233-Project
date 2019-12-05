@@ -133,11 +133,11 @@ void initGame()
     int bottom_padding = 3;
     spaceship_pos[0] = (79 - ship_width / 2) / 2;
     spaceship_pos[1] = 59 - ship_height - bottom_padding;
-    int asteroid_timer = 0;
-    int spawn_timer = 0;
-    int asteroid_count = 0;
-    int score = 0;
-    int alive = 1;
+    asteroid_timer = 0;
+    spawn_timer = 0;
+    asteroid_count = 0;
+    score = 0;
+    alive = 1;
 
     for (int i = 0; i < ASTEROID_MAX; i++)
     {
