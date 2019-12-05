@@ -41,7 +41,7 @@ static void print_SSEG(int num);
 
 //Global Variables
 //============================================================================================================
-int bgd_color = 0x286A;
+int bgd_color = 0x0807;
 int screen_width = 80;
 int screen_height = 60;
 //Determines if the player's ship hasn't been hit (0 when hit)
@@ -167,6 +167,7 @@ void updateSpaceship()
     spaceship_pos[0] = tilt[0];
     //FOR TESTING
     print_SSEG(spaceship_pos[0]);
+    drawSpaceship(spaceship_pos);
 }
 
 void updateGyroTilt()
