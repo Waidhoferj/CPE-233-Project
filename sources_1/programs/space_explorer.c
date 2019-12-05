@@ -52,7 +52,7 @@ int tilt[2] = {0};
 //X and y angular velocity value queues for averaging
 int velocity_queues[2][50] = {{0}, {0}};
 //An array of asteroid positions
-int asteroids[10][2] = {0};
+int asteroids[ASTEROID_MAX][2] = {0};
 
 int frame_delay = 70;
 int asteroid_timer = 0;
@@ -162,9 +162,8 @@ void updateSpaceship()
 
 void updateGyroTilt()
 {
-    int const q_len = 10;
     int sums[2] = {0};
-    for (int i = q_len - 2; i < 0; i--)
+    for (int i = ASTEROID_MAX - 2; i < 0; i--)
     {
         velocity_queues[0][i + 1] = velocity_queues[0][i];
         velocity_queues[1][i + 1] = velocity_queues[1][i];
@@ -175,8 +174,8 @@ void updateGyroTilt()
     velocity_queues[0][0] = *GYRO_X;
     velocity_queues[1][0] = *GYRO_Y;
     //Update tilt
-    tilt[0] = bin_val(*GYRO_X) / 3 + 10;
-    tilt[1] = bin_val(sums[1] / q_len);
+    tilt[0] = bin_val(*GYRO_X) / 3 + 100;
+    tilt[1] = bin_val(sums[1] / ASTEROID_MAX);
 }
 
 //Draw
