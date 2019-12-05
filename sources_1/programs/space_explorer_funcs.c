@@ -85,8 +85,9 @@ int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_COUNT][
 void initGame()
 {
     //since spaceship pos is top left corner of ship, have to calc the position based of the width/height
-    spaceship_pos[0] = 39 - ((ship_width - 1) / 2);
-    spaceship_pos[1] = 79 - ship_height;
+    int bottom_padding = 3;
+    spaceship_pos[0] = (79 - ship_width / 2) / 2;
+    spaceship_pos[1] = 59 - ship_height - bottom_padding;
     for (int i = 0; i < ASTEROID_COUNT; i++)
     {
         asteroids[i][0] = 0;
@@ -151,7 +152,7 @@ void draw_background()
     {
         for (int j = 0; j < screen_width; j++)
         {
-            draw_dot(i, j, bgd_color);
+            draw_dot(j, i, bgd_color);
         }
     }
 }
@@ -183,8 +184,8 @@ void draw_dot(int X, int Y, int color)
 
 void updateSpaceship()
 {
-    spaceship_pos[0] += *GYRO_X * .0001;
-    spaceship_pos[1] += *GYRO_Y * .0001;
+    spaceship_pos[0] += *GYRO_X % screen_width;
+    // spaceship_pos[1] += *GYRO_Y * .0001;
 }
 
 //A
@@ -209,9 +210,8 @@ int main(void)
 {
 
     initGame();
-    drawSpaceship(spaceship_pos);
 
-    int shipdelay = 32; //32 ms
+    int frame_delay = 32; //32 ms
     int asteroid_timer = 0;
     int asteroid_count = 0; //how many asteroids are on the screen
     //asteroid count also serves as the asteroid number when updating the array
@@ -220,14 +220,15 @@ int main(void)
         draw_background();
         updateSpaceship();
         alive = checkCollision(spaceship_pos, asteroids);
-        if (asteroid_timer == 1000) //updates the asteroid after 1000ms
+        if (asteroid_timer > 1000) //updates the asteroid after 1000ms
         {
             asteroid_timer = 0;
             //draws a new asteroid if there are less than 10 asteroids
             if (asteroid_count <= 10)
             {
-                int position[2] = {random_from(0, 60 - asteroid_width - 1), 80};
-                asteroids[asteroid_count][2] = position; //adds new asteroid position to asteroid arra
+                int position[2] = {random_from(1, 80 - asteroid_width - 1), 0};
+                asteroids[asteroid_count][0] = position[0];
+                asteroids[asteroid_count][1] = position[1];
                 drawAsteroid(position);
                 asteroid_count = asteroid_count++;
             }
@@ -239,6 +240,6 @@ int main(void)
             }
         }
         asteroid_timer = asteroid_timer++;
-        delay(shipdelay); //ships position changes after every shipdelay seconds
+        delay(frame_delay); //ships position changes after every shipdelay seconds
     }
 };

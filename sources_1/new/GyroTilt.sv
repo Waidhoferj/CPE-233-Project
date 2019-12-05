@@ -54,14 +54,14 @@ else begin
     if (slck < 50000) slck++; //increment
     else begin
     //sample
-//    x = 0;
-//    for(int i = 48; i < 0 ; i--) begin
-//        x += queue[i];
-//        queue[i + 1] = queue[i];
-//        end
-//    queue[0] = dx/rate;
-//    x/= 50;
-    x += bin_val(dx/rate);
+    x = 0;
+    for(int i = 48; i < 0 ; i--) { 
+        x += queue[i]
+        queue[i + 1] = queue[i]
+        }
+    queue[0] = dx/rate;
+    x/= 50;
+    x = bin(x)
     
         y = y + dy/rate;
         z = z + dz/rate;
