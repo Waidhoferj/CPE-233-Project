@@ -156,8 +156,8 @@ void drawAsteroid(int position[2])
     draw_horizontal_line(position[0] + 1, position[1], position[0] + 2, highlight);
     draw_vertical_line(position[0], position[1] + 1, position[1] + 2, highlight);
     //mid
-    draw_horizontal_line(position[0] + 1, position[1] + 1, position[0] + 2, 0xC5BE);
-    draw_horizontal_line(position[0] + 1, position[1] + 2, position[0] + 2, 0xC5BE);
+    draw_horizontal_line(position[0] + 1, position[1] + 1, position[0] + 2, midtone);
+    draw_horizontal_line(position[0] + 1, position[1] + 2, position[0] + 2, midtone);
     //shadow
     draw_horizontal_line(position[0] + 1, position[1] + 3, position[0] + 2, shadow);
     draw_vertical_line(position[0] + 3, position[1] + 1, position[1] + 2, shadow);
@@ -250,6 +250,6 @@ int main(void)
             }
         }
         asteroid_timer = asteroid_timer++;
-        delay(frame_delay); //ships position changes after every shipdelay seconds
+        delay(frame_delay); //amount of time before next frame
     }
 };
