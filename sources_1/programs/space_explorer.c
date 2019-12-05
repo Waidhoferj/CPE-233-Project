@@ -172,8 +172,9 @@ void updateSpaceship()
 
 void updateGyroTilt()
 {
+    int const q_len = 10;
     int sums[2] = {0};
-    for (int i = 48; i < 0; i--)
+    for (int i = q_len - 2; i < 0; i--)
     {
         velocity_queues[0][i + 1] = velocity_queues[0][i];
         velocity_queues[1][i + 1] = velocity_queues[1][i];
@@ -185,8 +186,8 @@ void updateGyroTilt()
     velocity_queues[1][0] = *GYRO_Y;
     //Update tilt
 
-    tilt[0] = bin_val(sums[0] / 50);
-    tilt[1] = bin_val(sums[1] / 50);
+    tilt[0] = bin_val(sums[0] / q_len);
+    tilt[1] = bin_val(sums[1] / q_len);
 }
 
 //Draw
@@ -195,9 +196,9 @@ void updateGyroTilt()
 void drawAsteroid(int position[2])
 {
     //colors
-    int highlight = 0xC5BE;
-    int midtone = 0xAD1B;
-    int shadow = 0x9C78;
+    int highlight = 0x000;
+    int midtone = 0x000;
+    int shadow = 0x000;
     //Highlights
     draw_horizontal_line(position[0] + 1, position[1], position[0] + 2, highlight);
     draw_vertical_line(position[0], position[1] + 1, position[1] + 2, highlight);
