@@ -229,7 +229,7 @@ int main(void)
     {
         draw_background();
         updateSpaceship();
-        alive = checkCollision(spaceship_pos, asteroids);
+        // alive = checkCollision(spaceship_pos, asteroids);
         if (asteroid_timer > 1000) //updates the asteroid after 1000ms
         {
             asteroid_timer = 0;
