@@ -220,7 +220,7 @@ void draw_dot(int X, int Y, int color)
 int main(void)
 {
     initGame();
-    int frame_delay = 32; //32 ms
+    int frame_delay = 1000; //32 ms
     int asteroid_timer = 0;
     int asteroid_count = 0; //how many asteroids are on the screen
     //asteroid count also serves as the asteroid number when updating the array
@@ -249,7 +249,7 @@ int main(void)
                 updateAsteroid(asteroids[a]);
             }
         }
-        asteroid_timer = asteroid_timer++;
+        asteroid_timer++;
         delay(frame_delay); //amount of time before next frame
     }
 };
