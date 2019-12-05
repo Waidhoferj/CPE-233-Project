@@ -97,15 +97,10 @@ int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_MAX][2]
 {
     for (int i = 0; i < asteroid_count; i++)
     {
-        int x = asteroid_positions[i][0];
-        int y = asteroid_positions[i][1];
+        int aster_x = asteroid_positions[i][0];
+        int aster_y = asteroid_positions[i][1];
 
-        //{x differences},{y difference}
-        int x_corner_dif[2] = {x + asteroid_width - ship_position[0], x - (ship_position[0] + ship_width)};
-        int x_overlap = abs(x_corner_dif[0] + x_corner_dif[1]) < abs(x_corner_dif[0]) + abs(x_corner_dif[1]);
-        int y_corner_dif[2] = {y + asteroid_height - ship_position[1], y - (ship_position[1] + ship_height)};
-        int y_overlap = abs(y_corner_dif[0] + y_corner_dif[1]) < abs(y_corner_dif[0]) + abs(y_corner_dif[1]);
-        if (x_overlap && y_overlap)
+        if ((aster_x + asteroid_width >= ship_position[0] && aster_x <= ship_position[0] + ship_width) && (aster_y < ship_position[1] + ship_height && aster_y + asteroid_height > ship_position[1]))
             return 1;
     }
     return 0;
@@ -286,7 +281,7 @@ int main(void)
         draw_background();
         updateGyroTilt();
         updateSpaceship();
-        // alive = checkCollision(spaceship_pos, asteroids);
+        alive = checkCollision(spaceship_pos, asteroids);
 
         if (spawn_timer > 10 && asteroid_count < ASTEROID_MAX)
         {
