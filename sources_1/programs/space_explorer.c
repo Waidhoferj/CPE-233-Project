@@ -163,11 +163,11 @@ void updateSpaceship()
 {
     if (*BTN_RIGHT_ADDR && !*BTN_LEFT_ADDR)
     {
-        spaceship_pos[0]++;
+        spaceship_pos[0] = (spaceship_pos[0] + 1) % screen_width;
     }
     else if (*BTN_LEFT_ADDR && !*BTN_LEFT_ADDR)
     {
-        spaceship_pos[0]--;
+        spaceship_pos[0] < 1 ? spaceship_pos[0] = screen_width - 1 : spaceship_pos[0]--;
     }
     spaceship_pos[0] = tilt[0];
     //FOR TESTING
