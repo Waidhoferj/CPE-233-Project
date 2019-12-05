@@ -39,6 +39,7 @@ void draw_background();
 int bin_val(int val);
 void updateGyroTilt();
 static void print_SSEG(int num);
+static int convertGyro(int vel);
 
 //Global Variables
 //============================================================================================================
@@ -176,8 +177,13 @@ void updateGyroTilt()
     velocity_queues[0][0] = *GYRO_X;
     velocity_queues[1][0] = *GYRO_Y;
     //Update tilt
-    tilt[0] = bin_val(*GYRO_X);
+    tilt[0] = convertGyro(*GYRO_X);
     tilt[1] = bin_val(sums[1] / VEL_Q_LEN);
+}
+
+static int convertGyro(int vel)
+{
+    return (int)(((float)vel) * 8.75 / 1000);
 }
 
 //Draw
