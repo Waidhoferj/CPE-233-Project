@@ -169,7 +169,6 @@ void updateSpaceship()
     {
         spaceship_pos[0] < 1 ? spaceship_pos[0] = screen_width - 1 : spaceship_pos[0]--;
     }
-    spaceship_pos[0] = tilt[0];
     //FOR TESTING
     print_SSEG(spaceship_pos[0]);
     drawSpaceship(spaceship_pos);
