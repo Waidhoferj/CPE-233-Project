@@ -336,10 +336,11 @@ int main(void)
 {
     while (1)
     {
-        print_SSEG(4);
+
         initGame();
         int res = runGame();
         drawL();
+        print_SSEG(4);
     }
 
     //how many asteroids are on the screen
