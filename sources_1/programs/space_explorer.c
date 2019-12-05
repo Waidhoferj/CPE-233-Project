@@ -336,6 +336,7 @@ int main(void)
 {
     while (1)
     {
+        print_SSEG(4);
         initGame();
         int res = runGame();
         drawL();
