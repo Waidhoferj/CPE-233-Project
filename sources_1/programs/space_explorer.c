@@ -180,11 +180,6 @@ static int runGame()
             {
                 updateAsteroid(asteroids[a]);
             }
-            if (bullet_pos[1] > 0)
-            {
-                bullet_pos[1]--;
-                draw_dot(bullet_pos[0], bullet_pos[1], BULLET_COLOR);
-            }
         }
 
         if (difficulty_timer > 120)
@@ -199,8 +194,14 @@ static int runGame()
             drawAsteroid(asteroids[a]);
         }
 
-        drawAmmo();
+        if (bullet_pos[1] > 0)
+        {
+            bullet_pos[1]--;
+            draw_dot(bullet_pos[0], bullet_pos[1], BULLET_COLOR);
+        }
 
+        drawAmmo();
+        difficulty_timer++;
         asteroid_timer++;
         spawn_timer++;
         delay(frame_delay); //amount of time before next frame
