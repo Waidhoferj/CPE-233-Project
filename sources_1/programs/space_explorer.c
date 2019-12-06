@@ -41,15 +41,15 @@ static void draw_vertical_line(int X, int Y, int toY, int color);
 //updates the asteroid position as its moving down the screen
 void updateAsteroid(int position[2]);
 //set up background
-void draw_background();
+static void draw_background();
 int bin_val(int val);
-void updateGyroTilt();
+static void updateGyroTilt();
 static void print_SSEG(int num);
 static int convertGyro(int vel);
 static void drawL();
 static int runGame();
-void drawAmmo();
-void pewPew();
+static void drawAmmo();
+static void pewPew();
 
 //Global Variables
 //============================================================================================================
@@ -257,14 +257,14 @@ void updateSpaceship()
     {
         spaceship_pos[0] < 1 ? spaceship_pos[0] = screen_width - 1 : spaceship_pos[0]--;
     }
-    else if (*BTN_TOP_ADDR && bullet_pos[1] < 0 && ammo)
+    else if (*BTN_CENTER_ADDR && bullet_pos[1] < 0 && ammo)
         pewPew();
 
     //FOR TESTING
     drawSpaceship(spaceship_pos);
 }
 
-void updateGyroTilt()
+static void updateGyroTilt()
 {
 
     int sums[2] = {0};
@@ -325,7 +325,7 @@ void drawSpaceship(int position[2])
     draw_vertical_line(position[0] + 2, position[1] + 3, position[1] + 4, shadow);
 }
 
-void draw_background()
+static void draw_background()
 {
     for (int i = 0; i < screen_height; i++)
     {
@@ -336,7 +336,7 @@ void draw_background()
     }
 }
 
-void drawAmmo()
+static void drawAmmo()
 {
     for (int i = 0; i < ammo; i++)
     {
@@ -368,7 +368,7 @@ void draw_dot(int X, int Y, int color)
     *VG_COLOR = color;
 }
 
-void pewPew()
+static void pewPew()
 {
     bullet_pos[0] = spaceship_pos[0] + 1;
     bullet_pos[1] = spaceship_pos[1] - 1;
