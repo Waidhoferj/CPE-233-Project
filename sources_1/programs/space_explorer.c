@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #define ASTEROID_MAX 50
 #define VEL_Q_LEN 50
-#define BULLET_COLOR 0x04
+int BULLET_COLOR = 0x04;
 
 //Addresses
 //============================================================================================================
@@ -199,8 +199,8 @@ static int runGame()
             drawAsteroid(asteroids[a]);
         }
 
-        drawAmmo()
-        
+        drawAmmo();
+
         asteroid_timer++;
         spawn_timer++;
         delay(frame_delay); //amount of time before next frame
@@ -256,8 +256,9 @@ void updateSpaceship()
     {
         spaceship_pos[0] < 1 ? spaceship_pos[0] = screen_width - 1 : spaceship_pos[0]--;
     }
-    else if (*BTN_TOP_ADDR && bullet_pos[1] < 0 && ammo) pewPew();
-    
+    else if (*BTN_TOP_ADDR && bullet_pos[1] < 0 && ammo)
+        pewPew();
+
     //FOR TESTING
     drawSpaceship(spaceship_pos);
 }
@@ -334,8 +335,12 @@ void draw_background()
     }
 }
 
-void drawAmmo() {
-
+void drawAmmo()
+{
+    for (int i = 0; i < ammo; i++)
+    {
+        draw_dot(screen_width - 2 - i * 2, screen_height, BULLET_COLOR);
+    }
 }
 
 static void draw_horizontal_line(int X, int Y, int toX, int color)
