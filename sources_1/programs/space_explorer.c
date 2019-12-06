@@ -199,9 +199,9 @@ static int runGame()
             }
         }
 
-        if (difficulty_timer > 120)
+        if (difficulty_timer > 500)
         {
-            ammo++;
+            ammo < 10 ? ammo++ : 0;
             difficulty_timer = 0;
             asteroid_count_max < ASTEROID_MAX ? asteroid_count_max++ : 0;
             // frame_delay > 5 ? frame_delay-- : 0;
@@ -212,9 +212,9 @@ static int runGame()
             drawAsteroid(asteroids[a]);
         }
 
-        if (bullet_pos[1] > 0)
+        if (bullet_pos[1] > -1)
         {
-            bullet_pos[1]--;
+
             draw_dot(bullet_pos[0], bullet_pos[1], BULLET_COLOR);
             int bullet_hit = checkHitAsteroid(bullet_pos, 1, 1);
             if (bullet_hit != -1)
@@ -223,6 +223,7 @@ static int runGame()
                 bullet_pos[0] = -1;
                 bullet_pos[1] = -1;
             }
+            bullet_pos[1]--;
         }
 
         drawAmmo();
@@ -268,7 +269,7 @@ void resetAsteroid(int *position)
 {
     score++;
     print_SSEG(score);
-    position[0] = random_from(0, screen_width);
+    position[0] = random_from(0, screen_width - asteroid_width);
     position[1] = 0;
 }
 
