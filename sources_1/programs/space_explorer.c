@@ -340,7 +340,7 @@ void drawAmmo()
 {
     for (int i = 0; i < ammo; i++)
     {
-        draw_dot(screen_width - 2 - i * 2, screen_height, BULLET_COLOR);
+        draw_dot(screen_width - 2 - i * 2, screen_height - 1, BULLET_COLOR);
     }
 }
 
