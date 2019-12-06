@@ -217,6 +217,8 @@ static int runGame()
             if (bullet_hit != -1)
             {
                 removeAsteroid(bullet_hit);
+                bullet_pos[0] = -1;
+                bullet_pos[1] = -1;
             }
         }
 
@@ -310,13 +312,12 @@ static int convertGyro(int vel)
 
 void removeAsteroid(int index)
 {
-    for (int i = index + 1; i < asteroid_count_max - 1; i++)
+    for (int i = index; i < asteroid_count_max - 1; i++)
     {
-        asteroids[i - 1][0] = asteroids[i][0];
-        asteroids[i - 1][1] = asteroids[i][0];
+        asteroids[i][0] = asteroids[i + 1][0];
+        asteroids[i][1] = asteroids[i + 1][1];
     }
-    asteroids[asteroid_count_max - 1][0] = 0;
-    asteroids[asteroid_count_max - 1][1] = 0;
+    asteroid_count_max--;
 }
 
 //Draw
