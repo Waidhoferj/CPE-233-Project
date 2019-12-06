@@ -286,10 +286,6 @@ static int convertGyro(int vel)
     return (int)(((float)vel) * 8.75 / 1000);
 }
 
-void increaseAsteroidCount() {
-    
-}
-
 //Draw
 //============================================================================================================
 
