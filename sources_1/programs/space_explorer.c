@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define ASTEROID_MAX 20
+#define ASTEROID_MAX 50
 #define VEL_Q_LEN 50
+#define BULLET_COLOR 0x04
 
 //Addresses
 //============================================================================================================
@@ -47,6 +48,8 @@ static void print_SSEG(int num);
 static int convertGyro(int vel);
 static void drawL();
 static int runGame();
+void drawAmmo();
+void pewPew();
 
 //Global Variables
 //============================================================================================================
@@ -68,6 +71,10 @@ int asteroid_timer = 0;
 int spawn_timer = 0;
 int asteroid_count = 0;
 int score = 0;
+int difficulty_timer = 0;
+int bullet_pos[2] = {0};
+int ammo = 5;
+int asteroid_count_max = 20;
 
 //Sizes
 int ship_width = 3;
@@ -136,6 +143,9 @@ void initGame()
     asteroid_timer = 0;
     spawn_timer = 0;
     asteroid_count = 0;
+    ammo = 5;
+    bullet_pos[0] = -1;
+    bullet_pos[1] = -1;
     score = 0;
     alive = 1;
 
@@ -155,7 +165,7 @@ static int runGame()
         updateSpaceship();
         alive = !checkCollision(spaceship_pos, asteroids);
 
-        if (spawn_timer > 10 && asteroid_count < ASTEROID_MAX)
+        if (spawn_timer > 10 && asteroid_count < asteroid_count_max)
         {
             spawn_timer = 0;
             int position[2] = {random_from(1, 80 - asteroid_width - 1), 0};
@@ -170,12 +180,27 @@ static int runGame()
             {
                 updateAsteroid(asteroids[a]);
             }
+            if (bullet_pos[1] > 0)
+            {
+                bullet_pos[1]--;
+                draw_dot(bullet_pos[0], bullet_pos[1], BULLET_COLOR);
+            }
+        }
+
+        if (difficulty_timer > 120)
+        {
+            difficulty_timer = 0;
+            asteroid_count_max < ASTEROID_MAX ? asteroid_count_max++ : 0;
+            frame_delay > 1 ? frame_delay-- : 0;
         }
 
         for (int a = 0; a < asteroid_count; a++)
         {
             drawAsteroid(asteroids[a]);
         }
+
+        drawAmmo()
+        
         asteroid_timer++;
         spawn_timer++;
         delay(frame_delay); //amount of time before next frame
@@ -231,6 +256,8 @@ void updateSpaceship()
     {
         spaceship_pos[0] < 1 ? spaceship_pos[0] = screen_width - 1 : spaceship_pos[0]--;
     }
+    else if (*BTN_TOP_ADDR && bullet_pos[1] < 0 && ammo) pewPew();
+    
     //FOR TESTING
     drawSpaceship(spaceship_pos);
 }
@@ -257,6 +284,10 @@ void updateGyroTilt()
 static int convertGyro(int vel)
 {
     return (int)(((float)vel) * 8.75 / 1000);
+}
+
+void increaseAsteroidCount() {
+    
 }
 
 //Draw
@@ -307,6 +338,10 @@ void draw_background()
     }
 }
 
+void drawAmmo() {
+
+}
+
 static void draw_horizontal_line(int X, int Y, int toX, int color)
 {
     toX++;
@@ -329,6 +364,13 @@ void draw_dot(int X, int Y, int color)
 {
     *VG_ADDR = (Y << 7) | X;
     *VG_COLOR = color;
+}
+
+void pewPew()
+{
+    bullet_pos[0] = spaceship_pos[0] + 1;
+    bullet_pos[1] = spaceship_pos[1] - 1;
+    ammo--;
 }
 
 //MAIN
