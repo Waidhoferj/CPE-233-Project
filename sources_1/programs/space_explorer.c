@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #define ASTEROID_MAX 50
 #define VEL_Q_LEN 50
-int BULLET_COLOR = 0x04;
+int BULLET_COLOR = 0xFF;
 
 //Addresses
 //============================================================================================================
@@ -114,6 +114,19 @@ int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_MAX][2]
     }
     return 0;
 }
+//If there is a hit, returns index of asteroid hit + 1
+int checkHitAsteroid(int *position, int width, int height)
+{
+    for (int i = 0; i < asteroid_count; i++)
+    {
+        int aster_x = asteroid_positions[i][0];
+        int aster_y = asteroid_positions[i][1];
+
+        if ((aster_x + asteroid_width >= position[0] && aster_x <= position[0] + ship_width) && (aster_y < position[1] + height && aster_y + asteroid_height > position[1]))
+            return i;
+    }
+    return -1;
+}
 
 int bin_val(int val)
 {
@@ -148,6 +161,7 @@ void initGame()
     bullet_pos[1] = -1;
     score = 0;
     alive = 1;
+    frame_delay = 10;
 
     for (int i = 0; i < ASTEROID_MAX; i++)
     {
@@ -186,7 +200,7 @@ static int runGame()
         {
             difficulty_timer = 0;
             asteroid_count_max < ASTEROID_MAX ? asteroid_count_max++ : 0;
-            frame_delay > 1 ? frame_delay-- : 0;
+            frame_delay > 5 ? frame_delay-- : 0;
         }
 
         for (int a = 0; a < asteroid_count; a++)
@@ -198,6 +212,11 @@ static int runGame()
         {
             bullet_pos[1]--;
             draw_dot(bullet_pos[0], bullet_pos[1], BULLET_COLOR);
+            int bullet_hit = checkHitAsteroid(bullet_pos, 1, 1);
+            if (bullet_hit != -1)
+            {
+                removeAsteroid(bullet_hit)
+            }
         }
 
         drawAmmo();
@@ -286,6 +305,17 @@ static void updateGyroTilt()
 static int convertGyro(int vel)
 {
     return (int)(((float)vel) * 8.75 / 1000);
+}
+
+void removeAsteroid(int index)
+{
+    for (int i = index + 1; i < asteroid_count_max - 1; i++)
+    {
+        asteroids[i - 1][0] = asteroids[i][0];
+        asteroids[i - 1][1] = asteroids[i][0];
+    }
+    asteroids[asteroid_count_max - 1][0] = 0;
+    asteroids[asteroid_count_max - 1][1] = 0;
 }
 
 //Draw
