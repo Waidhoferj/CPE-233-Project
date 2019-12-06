@@ -212,7 +212,7 @@ static int runGame()
             drawAsteroid(asteroids[a]);
         }
 
-        if (bullet_pos[1] > -1)
+        if (bullet_pos[1] >= 0)
         {
 
             draw_dot(bullet_pos[0], bullet_pos[1], BULLET_COLOR);
