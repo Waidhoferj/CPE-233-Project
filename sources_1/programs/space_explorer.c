@@ -156,7 +156,9 @@ void initGame()
     spaceship_pos[1] = 59 - ship_height - bottom_padding;
     asteroid_timer = 0;
     spawn_timer = 0;
+    difficulty_timer = 0;
     asteroid_count = 0;
+    asteroid_count_max = 20;
     ammo = 5;
     bullet_pos[0] = -1;
     bullet_pos[1] = -1;
@@ -199,6 +201,7 @@ static int runGame()
 
         if (difficulty_timer > 120)
         {
+            ammo++;
             difficulty_timer = 0;
             asteroid_count_max < ASTEROID_MAX ? asteroid_count_max++ : 0;
             // frame_delay > 5 ? frame_delay-- : 0;
