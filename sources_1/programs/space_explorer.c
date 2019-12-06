@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define ASTEROID_MAX 50
+#define ASTEROID_MAX 35
 #define VEL_Q_LEN 50
 int BULLET_COLOR = 0xFF;
 
@@ -201,7 +201,7 @@ static int runGame()
         {
             difficulty_timer = 0;
             asteroid_count_max < ASTEROID_MAX ? asteroid_count_max++ : 0;
-            frame_delay > 5 ? frame_delay-- : 0;
+            // frame_delay > 5 ? frame_delay-- : 0;
         }
 
         for (int a = 0; a < asteroid_count; a++)
