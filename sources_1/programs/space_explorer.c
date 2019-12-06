@@ -317,7 +317,7 @@ void removeAsteroid(int index)
         asteroids[i][0] = asteroids[i + 1][0];
         asteroids[i][1] = asteroids[i + 1][1];
     }
-    asteroid_count_max--;
+    asteroid_count;
 }
 
 //Draw
