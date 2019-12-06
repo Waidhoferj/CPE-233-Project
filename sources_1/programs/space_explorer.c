@@ -215,7 +215,7 @@ static int runGame()
             int bullet_hit = checkHitAsteroid(bullet_pos, 1, 1);
             if (bullet_hit != -1)
             {
-                removeAsteroid(bullet_hit)
+                removeAsteroid(bullet_hit);
             }
         }
 
