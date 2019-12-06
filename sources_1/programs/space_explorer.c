@@ -73,7 +73,7 @@ int spawn_timer = 0;
 int asteroid_count = 0;
 int score = 0;
 int difficulty_timer = 0;
-int bullet_pos[2] = {0};
+int bullet_pos[2] = {-1};
 int ammo = 5;
 int asteroid_count_max = 20;
 
