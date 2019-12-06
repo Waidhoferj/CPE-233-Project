@@ -31,7 +31,7 @@ void drawSpaceship(int position[2]);
 //Draws spaceship at position where position is the upper lefthand corner of the ship
 void drawAsteroid(int position[2]);
 //iterates through asteroid positions and sees if they come in contact with ship
-int checkCollision(int spaceshipPosition[2], int asteroidPositions[ASTEROID_MAX][2]);
+int checkCollision(int spaceshipPosition[2]);
 //delays animation loop x miliseconds
 void delay(int ms);
 void resetAsteroid(int *position);
@@ -50,6 +50,7 @@ static void drawL();
 static int runGame();
 static void drawAmmo();
 static void pewPew();
+int checkHitAsteroid(int *position, int width, int height);
 
 //Global Variables
 //============================================================================================================
@@ -102,12 +103,12 @@ void delay(int ms)
     };
 }
 
-int checkCollision(int ship_position[2], int asteroid_positions[ASTEROID_MAX][2])
+int checkCollision(int ship_position[2])
 {
     for (int i = 0; i < asteroid_count; i++)
     {
-        int aster_x = asteroid_positions[i][0];
-        int aster_y = asteroid_positions[i][1];
+        int aster_x = asteroids[i][0];
+        int aster_y = asteroids[i][1];
 
         if ((aster_x + asteroid_width >= ship_position[0] && aster_x <= ship_position[0] + ship_width) && (aster_y < ship_position[1] + ship_height && aster_y + asteroid_height > ship_position[1]))
             return 1;
@@ -119,8 +120,8 @@ int checkHitAsteroid(int *position, int width, int height)
 {
     for (int i = 0; i < asteroid_count; i++)
     {
-        int aster_x = asteroid_positions[i][0];
-        int aster_y = asteroid_positions[i][1];
+        int aster_x = asteroids[i][0];
+        int aster_y = asteroids[i][1];
 
         if ((aster_x + asteroid_width >= position[0] && aster_x <= position[0] + ship_width) && (aster_y < position[1] + height && aster_y + asteroid_height > position[1]))
             return i;
@@ -177,7 +178,7 @@ static int runGame()
         draw_background();
         updateGyroTilt();
         updateSpaceship();
-        alive = !checkCollision(spaceship_pos, asteroids);
+        alive = !checkCollision(spaceship_pos);
 
         if (spawn_timer > 10 && asteroid_count < asteroid_count_max)
         {
