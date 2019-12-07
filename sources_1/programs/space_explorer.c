@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #define ASTEROID_MAX 35
 #define VEL_Q_LEN 50
-int BULLET_COLOR = 0xFF;
 
 //Addresses
 //============================================================================================================
@@ -22,25 +21,17 @@ volatile int *const SSEG_ADDR = (int *)0x110C0000;
 //Prototypes
 //============================================================================================================
 
-//Resets all positions and gets game ready to start
 void initGame();
-//Generates random number between upper and lower
 int random_from(int lower, int upper);
-//Draws spaceship at position where position is the upper lefthand corner of the ship
 void drawSpaceship(int position[2]);
-//Draws spaceship at position where position is the upper lefthand corner of the ship
 void drawAsteroid(int position[2]);
-//iterates through asteroid positions and sees if they come in contact with ship
-int checkCollision(int spaceshipPosition[2]);
-//delays animation loop x miliseconds
+int checkShipCollision();
 void delay(int ms);
 void resetAsteroid(int *position);
 void draw_dot(int X, int Y, int color);
 static void draw_horizontal_line(int X, int Y, int toX, int color);
 static void draw_vertical_line(int X, int Y, int toY, int color);
-//updates the asteroid position as its moving down the screen
 void updateAsteroid(int position[2]);
-//set up background
 static void draw_background();
 int bin_val(int val);
 static void updateGyroTilt();
@@ -55,38 +46,34 @@ int checkHitAsteroid(int *position, int width, int height);
 //Global Variables
 //============================================================================================================
 int bgd_color = 0x000;
-int screen_width = 80;
-int screen_height = 60;
-//Determines if the player's ship hasn't been hit (0 when hit)
-int alive = 1;
+int BULLET_COLOR = 0xFF;
+int alive = 1; //Determines if the player's ship has been hit (0 when hit)
 int spaceship_pos[2];
-//X and y tilt values
-int tilt[2] = {0};
-//X and y angular velocity value queues for averaging
-int velocity_queues[2][VEL_Q_LEN] = {{0}, {0}};
-//An array of asteroid positions
-int asteroids[ASTEROID_MAX][2] = {0};
-
-int frame_delay = 10;
-int asteroid_timer = 0;
-int spawn_timer = 0;
-int asteroid_count = 0;
-int score = 0;
-int difficulty_timer = 0;
 int bullet_pos[2] = {-1};
-int ammo = 5;
-int asteroid_count_max = 20;
+int tilt[2] = {0};                              //Would hold tilt of gyroscope
+int asteroids[ASTEROID_MAX][2] = {0};           //Holds a list of x and y values for the asteroids
+int frame_delay = 10;                           //Controls the speed of the base clock.
+int asteroid_timer = 0;                         //Controlls the movement speed of the asteroids.
+int spawn_timer = 0;                            //Increases asteroid_count until it hits asteroid_count_max (lowercased).
+int difficulty_timer = 0;                       //Slowest clock used to slowly increase the number of asteroids.
+int asteroid_count = 0;                         //Current number of asteroids looping on screen.
+int score = 0;                                  //The number of asteroids the user has passed.
+int ammo = 5;                                   //Number of bullets left to shoot
+int asteroid_count_max = 20;                    //The current maximum number of asteroids, which will incrememt based on the difficulty_timer slow clock. It will always be less than the ASTEROID_MAX constant, which is the absoute maximum.
+int velocity_queues[2][VEL_Q_LEN] = {{0}, {0}}; //Used when we attempted to avg the angular velocity of the gyroscope in code.
 
 //Sizes
+int screen_width = 80;
+int screen_height = 60;
 int ship_width = 3;
 int ship_height = 5;
 int asteroid_width = 4;
 int asteroid_height = 4;
 
-//Function Definitions
-
+//FUNCTIONS
 //Helpers
 //============================================================================================================
+//Produces a random integer from lower to upper (inclusive)
 int random_from(int lower, int upper)
 {
     return (rand() %
@@ -94,6 +81,7 @@ int random_from(int lower, int upper)
            lower;
 }
 
+//Delays the main thread for ms milliseconds. To be used to define frames in animaiton.
 void delay(int ms)
 {
     int count = ms * 12500;
@@ -103,19 +91,20 @@ void delay(int ms)
     };
 }
 
-int checkCollision(int ship_position[2])
+//Checks if the ship has collided with any asteroids.
+int checkShipCollision()
 {
     for (int i = 0; i < asteroid_count; i++)
     {
         int aster_x = asteroids[i][0];
         int aster_y = asteroids[i][1];
 
-        if ((aster_x + asteroid_width >= ship_position[0] && aster_x <= ship_position[0] + ship_width) && (aster_y < ship_position[1] + ship_height && aster_y + asteroid_height > ship_position[1]))
+        if ((aster_x + asteroid_width >= spaceship_pos[0] && aster_x <= spaceship_pos[0] + ship_width) && (aster_y < spaceship_pos[1] + ship_height && aster_y + asteroid_height > spaceship_pos[1]))
             return 1;
     }
     return 0;
 }
-//If there is a hit, returns index of asteroid hit + 1
+//Checks if the object provided has been hit by an asteroid. If there is a hit, returns index of asteroid hit, else returns -1.
 int checkHitAsteroid(int *position, int width, int height)
 {
     for (int i = 0; i < asteroid_count; i++)
@@ -129,6 +118,7 @@ int checkHitAsteroid(int *position, int width, int height)
     return -1;
 }
 
+//Binning function for the gyroscope velocity. Used for limiting noise.
 int bin_val(int val)
 {
     if (-200 < val && val < 200)
@@ -141,6 +131,7 @@ int bin_val(int val)
         return val;
 }
 
+//Prints the provided number to the seven segment display on the Basys3 board.
 static void print_SSEG(int num)
 {
     *SSEG_ADDR = num;
@@ -148,9 +139,9 @@ static void print_SSEG(int num)
 
 //Gamestate
 //============================================================================================================
+//Prepares state variables for a new game.
 void initGame()
 {
-    //since spaceship pos is top left corner of ship, have to calc the position based of the width/height
     int bottom_padding = 3;
     spaceship_pos[0] = (79 - ship_width / 2) / 2;
     spaceship_pos[1] = 59 - ship_height - bottom_padding;
@@ -173,45 +164,52 @@ void initGame()
     }
 }
 
+//Starts game and keeps the animation loop running until players is hit with asteroid.
 static int runGame()
 {
+    //Main animation loop
     while (alive)
     {
         draw_background();
         updateGyroTilt();
         updateSpaceship();
-        alive = !checkCollision(spaceship_pos);
+        alive = !checkShipCollision();
 
+        //Spawn Timer
         if (spawn_timer > 10 && asteroid_count < asteroid_count_max)
         {
+            //Adds new asteroids
             spawn_timer = 0;
             int position[2] = {random_from(1, 80 - asteroid_width - 1), 0};
             asteroids[asteroid_count][0] = position[0];
             asteroids[asteroid_count][1] = position[1];
             asteroid_count++;
         }
+        //Asteroid Timer
         if (asteroid_timer > 3)
         {
+            //Move asteroids
             asteroid_timer = 0;
             for (int a = 0; a < asteroid_count; a++)
             {
                 updateAsteroid(asteroids[a]);
             }
         }
-
+        //Difficulty Timer
         if (difficulty_timer > 500)
         {
-            ammo < 10 ? ammo++ : 0;
+
+            ammo < 10 ? ammo++ : 0; //Increase ammo supply
             difficulty_timer = 0;
-            asteroid_count_max < ASTEROID_MAX ? asteroid_count_max++ : 0;
-            // frame_delay > 5 ? frame_delay-- : 0;
+            asteroid_count_max < ASTEROID_MAX ? asteroid_count_max++ : 0; //Increase the max number of asteroids in the array.
         }
 
+        //Draw all of the asteroids.
         for (int a = 0; a < asteroid_count; a++)
         {
             drawAsteroid(asteroids[a]);
         }
-
+        //Bullet logic
         if (bullet_pos[1] >= 0)
         {
 
@@ -227,6 +225,7 @@ static int runGame()
         }
 
         drawAmmo();
+        //Incrememt all slowclocks
         difficulty_timer++;
         asteroid_timer++;
         spawn_timer++;
@@ -235,6 +234,7 @@ static int runGame()
     return 1;
 }
 
+//Draws the game over screen and holds user there until they click the restart button.
 static void drawL()
 {
 
@@ -255,7 +255,7 @@ static void drawL()
 
 //Updates
 //============================================================================================================
-
+//Updates the position of the asteroid
 void updateAsteroid(int *position)
 {
     //lowers the asteroid by one bit then randomly generates the x position
@@ -265,6 +265,7 @@ void updateAsteroid(int *position)
         resetAsteroid(position);
 }
 
+//Places the asteroid back at the top of the screen.
 void resetAsteroid(int *position)
 {
     score++;
@@ -273,23 +274,42 @@ void resetAsteroid(int *position)
     position[1] = 0;
 }
 
+//Removes asteroid from array at index.
+void removeAsteroid(int index)
+{
+    for (int i = index; i < asteroid_count_max - 1; i++)
+    {
+        asteroids[i][0] = asteroids[i + 1][0];
+        asteroids[i][1] = asteroids[i + 1][1];
+    }
+    asteroid_count--;
+}
+
+//Handles user input
 void updateSpaceship()
 {
-    if (*BTN_RIGHT_ADDR && !*BTN_LEFT_ADDR)
+    if (*BTN_RIGHT_ADDR && !*BTN_LEFT_ADDR) //Right button pressed : go right.
     {
         spaceship_pos[0] = (spaceship_pos[0] + 1) % screen_width;
     }
-    else if (*BTN_LEFT_ADDR && !*BTN_RIGHT_ADDR)
+    else if (*BTN_LEFT_ADDR && !*BTN_RIGHT_ADDR) //Left button pressed: go left.
     {
         spaceship_pos[0] < 1 ? spaceship_pos[0] = screen_width - 1 : spaceship_pos[0]--;
     }
-    else if (*BTN_CENTER_ADDR && bullet_pos[1] < 0 && ammo)
+    else if (*BTN_CENTER_ADDR && bullet_pos[1] < 0 && ammo) //Center button pressed: shoot if possible.
         pewPew();
 
-    //FOR TESTING
     drawSpaceship(spaceship_pos);
 }
 
+static void pewPew()
+{
+    bullet_pos[0] = spaceship_pos[0] + 1;
+    bullet_pos[1] = spaceship_pos[1] - 1;
+    ammo--;
+}
+
+//NOT USED: was an attempt to interpret the gyro data in software. Keeping it here to show process.
 static void updateGyroTilt()
 {
 
@@ -308,20 +328,11 @@ static void updateGyroTilt()
     tilt[0] = convertGyro(*GYRO_X);
     tilt[1] = bin_val(sums[1] / VEL_Q_LEN);
 }
-
+//NOT USED: was an attempt to interpret the gyro data in software. Keeping it here to show process.
 static int convertGyro(int vel)
 {
+    //Conversion dps/digit to dps as addressed the the pmodgyro documentation
     return (int)(((float)vel) * 8.75 / 1000);
-}
-
-void removeAsteroid(int index)
-{
-    for (int i = index; i < asteroid_count_max - 1; i++)
-    {
-        asteroids[i][0] = asteroids[i + 1][0];
-        asteroids[i][1] = asteroids[i + 1][1];
-    }
-    asteroid_count--;
 }
 
 //Draw
@@ -404,25 +415,17 @@ void draw_dot(int X, int Y, int color)
     *VG_COLOR = color;
 }
 
-static void pewPew()
-{
-    bullet_pos[0] = spaceship_pos[0] + 1;
-    bullet_pos[1] = spaceship_pos[1] - 1;
-    ammo--;
-}
-
 //MAIN
 //============================================================================================================
 int main(void)
 {
     while (1)
     {
-
         initGame();
         int res = runGame();
+        //In this case we only have 1 screen, but if we had 2 screen options
+        //we can use the res value to return the screen choice from runGame
+        //and display it in the main animation loop
         drawL();
     }
-
-    //how many asteroids are on the screen
-    //asteroid count also serves as the asteroid number when updating the array
 };
