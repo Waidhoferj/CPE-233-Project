@@ -1,6 +1,5 @@
 `timescale 1ns / 1ps
 // CREDIT: based off of the master_interface created by Andrew Skreen from Diligent
-//https://reference.digilentinc.com/_media/reference/pmod/pmodgyro/pmodgyro_demo_verilog.zip
 //Module: GyroFsm
 //Purpose: Gets angular velocity data from the GYRO PMOD
 
