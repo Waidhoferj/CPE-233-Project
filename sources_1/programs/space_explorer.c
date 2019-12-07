@@ -171,7 +171,6 @@ static int runGame()
     while (alive)
     {
         draw_background();
-        updateGyroTilt();
         updateSpaceship();
         alive = !checkShipCollision();
 
