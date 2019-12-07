@@ -172,7 +172,6 @@ static int runGame()
     {
         draw_background();
         updateSpaceship();
-        alive = !checkShipCollision();
 
         //Spawn Timer
         if (spawn_timer > 10 && asteroid_count < asteroid_count_max)
@@ -208,6 +207,7 @@ static int runGame()
         {
             drawAsteroid(asteroids[a]);
         }
+        drawAmmo();
         //Bullet logic
         if (bullet_pos[1] >= 0)
         {
@@ -222,8 +222,8 @@ static int runGame()
             }
             bullet_pos[1]--;
         }
+        alive = !checkShipCollision();
 
-        drawAmmo();
         //Incrememt all slowclocks
         difficulty_timer++;
         asteroid_timer++;
