@@ -1,5 +1,6 @@
 `timescale 1ns / 1ps
 // CREDIT: based off of the PmodGYRO_Demo created by Andrew Skreen from Diligent
+//https://reference.digilentinc.com/_media/reference/pmod/pmodgyro/pmodgyro_demo_verilog.zip
 
 // ==============================================================================
 // 										  Define Module
@@ -7,7 +8,6 @@
 module GyroTop (
     input CLK, RST,
     inout [3:0] JA,
-    //Should the outputs below exist in this form?
     output logic [15:0] X, Y, Z
 );
 
@@ -26,7 +26,7 @@ module GyroTop (
 // 							  		   Implementation
 // ============================================================================== 
 
-master_interface GFSM (
+GyroFsm GFSM (
 						.begin_transmission(begin_transmission),
 						.end_transmission(end_transmission),
 						.send_data(send_data),
@@ -35,12 +35,12 @@ master_interface GFSM (
 						.rst(RST),
 						.slave_select(slave_select),
 						.start(1),
-						.x_axis_data(X),
-						.y_axis_data(Y),
-						.z_axis_data(Z)
+						.x_axis_data(x_axis_data),
+						.y_axis_data(y_axis_data),
+						.z_axis_data(z_axis_data)
 			);
 
-spi_interface_2 SPII(
+spi_interface SPII(
 						.begin_transmission(begin_transmission),
 						.slave_select(slave_select),
 						.send_data(send_data),
@@ -53,6 +53,18 @@ spi_interface_2 SPII(
 						.sclk(JA[3])
 			);
 
-    assign JA[0] = slave_select;
+
+	GyroTilt GT(
+				.dx(x_axis_data),
+				.dy(y_axis_data),
+				.dz(z_axis_data),
+				.RST(RST),
+			   .CLK(CLK),
+				.X(X),
+				.Y(Y),
+				.Z(Z)
+	);
+
+     assign JA[0] = slave_select;
     
 endmodule

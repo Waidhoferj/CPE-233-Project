@@ -20,8 +20,11 @@ module GyroTilt (
 //=============================================
 logic [15:0] x, y, z; //state storage of tilt in each dimension
 logic [15:0] slck = 0; //since we will sample every 1ms, we will wait for the slow clock to count up to 50 x 10^3 before sampling
-logic [15:0] queue [50];
-logic [15:0] avg;
+logic [15:0] avgs [3];
+logic [15:0] queue_x [50];
+logic [15:0] queue_y [50];
+logic [15:0] queue_z [50];
+logic [15:0] avgs [3];
 parameter rate = 1000; //Scales dps to correct time sampling rate
 
 //Functionality
@@ -39,7 +42,16 @@ initial begin
     y = 0;
     z = 0;
     slck = 0;
-    for(int i = 0; i < 50; i++) queue[i] = 0;
+
+    for(int i = 0; i < 50; i++) {
+        queue_x[i] = 0;
+        queue_y[i] = 0;
+        queue_z[i] = 0;
+        
+
+    }
+
+    for(int i = 0; i < 3; i++) avgs[i] = 0;
 end
 
 always_ff @(posedge CLK) begin
@@ -48,23 +60,41 @@ if(RST)begin
     y = 0;
     z = 0;
     slck = 0;
+
+    for(int i = 0; i < 50; i++) {
+        queue_x[i] = 0;
+        queue_y[i] = 0;
+        queue_z[i] = 0;
+        
+
+    }
+
+    for(int i = 0; i < 3; i++) avgs[i] = 0;
 end 
 else begin
 //Sample every 1ms
-    if (slck < 50000) slck++; //increment
+    if (slck < 50000) slck++; //increment slow clock
     else begin
     //sample
     x = 0;
+    //Create a rolling queue of angular velocity values for an average.
     for(int i = 48; i < 0 ; i--) { 
-        x += queue[i]
-        queue[i + 1] = queue[i]
+        avgs[0] += queue_x[i];
+        queue_x[i + 1] = queue_x[i];
+        avgs[1] += queue_y[i];
+        queue_y[i + 1] = queue_y[i];
+        avgs[2] += queue_z[i];
+        queue_z[i + 1] = queue_z[i];
         }
-    queue[0] = dx/rate;
-    x/= 50;
-    x = bin(x)
-    
-        y = y + dy/rate;
-        z = z + dz/rate;
+    queue_x[0] = dx/rate;
+    queue_y[0] = dy/rate;
+    queue_z[0] = dz/rate;
+    //Take average
+    for(int i = 0; i < 3; i++) avgs[i]/= 50;
+    //Bin the average in case of minor noise and add tilt velocity to current tilt
+        x =  x + bin(avgs[0]);
+        y = y + bin(avgs[1]);
+        z = z + bin(avgs[2]);
          X <= x;
         Y <= y;
         Z <= z;
